@@ -1,0 +1,57 @@
+void main(float3 pvec   : POSITION,
+          float4 color  : COLOR0,
+          float radius  : TEXCOORD0,
+  uniform float4x4 ModelViewProj,
+  uniform float4x4 ModelViewI,
+  uniform float4x4 ProjI,
+  uniform float2 wsize,
+      out float4 pout   : POSITION,
+      out float psize   : PSIZE,
+      out float4 cout   : TEXCOORD0,
+      out float4 sdiag  : TEXCOORD1,
+      out float4 c3     : TEXCOORD2,
+      out float4x4 MTI  : TEXCOORD3
+        )
+{
+    float a, b, c, d;
+    float r1, r2;
+    static const float4 diag = float4(1.0, 1.0, 1.0, -1.0);
+    float4x4 T = float4x4(radius, 0.0, 0.0, pvec.x, 0.0, radius, 0.0, pvec.y, 0.0, 0.0, radius, pvec.z, 0.0, 0.0, 0.0, 1.0);
+    float4x4 r = mul(ModelViewProj, T);
+
+    // Compute the bounding box size
+    float4 tmp = diag * r[3];
+
+    a = dot(r[3], tmp);
+    b = -2.0 * dot(r[0], tmp);
+    c = dot(r[0], diag * r[0]);
+
+    d = b * b - 4.0 * a * c;
+    r1 = abs(sqrt(d) / a);
+
+    b = -2.0 * dot(r[1], tmp);
+    c = dot(r[1], diag * r[1]);
+
+    d = b * b - 4.0 * a * c;
+    r2 = abs(sqrt(d) / a);
+
+    psize = max(r1*wsize.x, r2*wsize.y);
+    psize = psize / 2.0;
+
+    // Pass T^(-1)M^(-1) to the fragment shader
+    MTI = ModelViewI;
+    MTI._m03_m13_m23 -= pvec;
+    MTI /= radius;
+    MTI._m33 = 1.0;
+
+    // Calculate c3 using the 2nd column of the inverse projection matrix
+    c3 = mul(MTI, ProjI._m02_m12_m22_m32);
+
+    // Compute a of the quadratic equation in the fragment shader here
+    // and use it in the diagonal
+    a = dot(c3, diag * c3);
+    sdiag = diag / a;
+
+    pout = mul(ModelViewProj, float4(pvec, 1.0));
+    cout = color;
+}

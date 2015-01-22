@@ -1,0 +1,75 @@
+float get_value(sampler2D map,
+           float4 normal,
+           float2 loc)
+{
+    float4 val = tex2D(map, loc);
+    return 1.0 - abs(dot(val.xyz, normal.xyz));
+}
+
+float get_depth_difference(sampler2D map,
+           float4 normal,
+           float2 loc)
+{
+    float4 pos = tex2D(map, loc);
+    return abs(pos.z / pos.w - normal.w);
+}
+
+float4 get_normal_and_position(sampler2D map,
+               sampler2D pos,
+           float2 loc)
+{
+    float4 position = tex2D(pos, loc);
+    float4 normal = tex2D(map, loc);
+    return float4(normal.xyz, position.z / position.w);
+}
+
+float get_edge(sampler2D map,
+               sampler2D pos,
+               float2 texturesize,
+           float2 loc)
+{
+    float sum = 0.0;
+    float x, y;
+    float4 normal;
+
+    const float2 texmapscale = 1.0 / texturesize;
+
+    float4 normal1 = get_normal_and_position(map, pos, loc);
+
+    float Gx = get_value(map, normal1, loc - texmapscale);
+    Gx += get_value(map, normal1, loc - float2(texmapscale.x, 0.0));
+    Gx += get_value(map, normal1, loc - float2(texmapscale.x, -texmapscale.y));
+    Gx -= get_value(map, normal1, loc + texmapscale);
+    Gx -= get_value(map, normal1, loc + float2(texmapscale.x, 0.0));
+    Gx -= get_value(map, normal1, loc + float2(texmapscale.x, -texmapscale.y));
+
+    float Gy = get_value(map, normal1, loc - texmapscale);
+    Gy += get_value(map, normal1, loc - float2(0.0, texmapscale.y));
+    Gy += get_value(map, normal1, loc - float2(-texmapscale.x, texmapscale.y));
+    Gy -= get_value(map, normal1, loc + texmapscale);
+    Gy -= get_value(map, normal1, loc + float2(0.0, texmapscale.x));
+    Gy -= get_value(map, normal1, loc + float2(-texmapscale.x, texmapscale.y));
+
+    //~ float depth = get_depth_difference(pos, normal1, loc + texmapscale);
+    //~ depth += get_depth_difference(pos, normal1, loc - texmapscale);
+    //~ depth += get_depth_difference(pos, normal1, loc - float2(texmapscale.x, -texmapscale.y));
+    //~ depth += get_depth_difference(pos, normal1, loc - float2(-texmapscale.x, texmapscale.y));
+
+    //~ return sqrt(Gx*Gx + Gy*Gy) * depth / 0.04;
+    return sqrt(Gx*Gx + Gy*Gy);
+}
+
+float4 main(  float2 coord  : TEXCOORD0,
+              uniform sampler2D normal,
+              uniform sampler2D pos,
+              uniform sampler2D shadedcolor,
+              uniform float2 texturesize
+            ): COLOR0
+{
+    float edge = get_edge(normal, pos, texturesize, coord);
+
+    float4 col = tex2D(shadedcolor, coord);
+
+    return col * (1.0 - edge);
+    //~ return float4(edge, edge, edge, 1.0);
+}

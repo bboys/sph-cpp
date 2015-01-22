@@ -1,0 +1,82 @@
+float interp_shadow(sampler2D map,
+           float2 texturesize,
+           float4 loc)
+{
+    float sum = 0.0;
+    float x, y;
+    float shadow;
+
+    const float2 texmapscale = 1.0 / texturesize;
+
+    for (y = -1.5; y <= 1.5; y += 1.0)
+    {
+        for (x = -1.5; x <= 1.5; x += 1.0)
+        {
+            shadow = tex2D(map, loc.xy + float2(x,y) * texmapscale);
+            sum += (shadow < loc.z && shadow > 1e-6);
+        }
+    }
+
+    if (sum > 15.99 || sum < 0.01)
+        return sum / 16.0;
+
+    for (y = -1.0; y <= 1.0; y += 1.0)
+    {
+        for (x = -1.5; x <= 1.5; x += 0.5)
+        {
+            shadow = tex2D(map, loc.xy + float2(x,y) * texmapscale);
+            sum += (shadow < loc.z && shadow > 1e-6);
+        }
+    }
+
+    for (y = -1.5; y <= 1.5; y += 1.0)
+    {
+        for (x = -1.0; x <= 1.0; x += 1.0)
+        {
+            shadow = tex2D(map, loc.xy + float2(x,y) * texmapscale);
+            sum += (shadow < loc.z && shadow > 1e-6);
+        }
+    }
+
+    return sum / 49.0;
+}
+
+float4 main(  float2 coord  : TEXCOORD0,
+              uniform sampler2D color,
+              uniform sampler2D normal,
+              uniform sampler2D pos,
+              uniform sampler2D shadowmap,
+              uniform float2 texturesize,
+              uniform float4 lightpos,
+              uniform float4x4 ShadowProj
+            ): COLOR0
+{
+    float4 norm = tex2D(normal, coord);
+    if (norm.w > 1e-6)
+        discard;
+
+    float4 col = tex2D(color, coord);
+    float4 position = tex2D(pos, coord);
+
+    float4 pos2 = mul(ShadowProj, position);
+    pos2.xyz = (pos2.xyz + pos2.www) / 2.0;
+    pos2 /= pos2.w;
+    pos2.z -= 1e-3;
+
+    float shadow = interp_shadow(shadowmap, texturesize, pos2);
+
+    float3 l = lightpos.xyz - position.xyz / position.w;
+    l = normalize(l);
+
+    float d = dot(norm.xyz, l);
+    float3 r = 2.0 * d * norm.xyz - l;
+    r = normalize(r);
+
+    float4 lightcolor = float4(1.0 - shadow, 1.0 - shadow, 1.0 - shadow, 1.0);
+    static const float ka = 0.1;
+    static const float kd = 0.8;
+    static const float ks = 0.5;
+    static const float sn = 16.0;
+
+    return col * (lightcolor * max(0.0, d) * kd + ka) + lightcolor * pow(max(0.0, dot(r, normalize(-position.xyz))), sn) * ks;
+}

@@ -1,0 +1,47 @@
+void main(float3 pvec   : POSITION,
+          float4 color  : COLOR0,
+          float3 dir    : TEXCOORD0,
+  uniform float4x4 ModelViewProj,
+  uniform float4x4 ModelViewI,
+  uniform float4x4 ProjI,
+  uniform float2 wsize,
+      out float4 pout   : POSITION,
+      out float psize   : PSIZE,
+      out float4 cout   : TEXCOORD0,
+      out float4 sdiag  : TEXCOORD1,
+      out float4 c3     : TEXCOORD2,
+      out float4x4 MTI  : TEXCOORD3
+        )
+{
+    float a, b, c, d;
+    static const float4 diag = float4(1.0, 0.0, 0.0, -1.0);
+    float height = length(dir);
+    float3 ndir = dir / height;
+    const float3 up = normalize(float3(1.0, ndir.zx));
+    float3 u = normalize(cross(ndir, up));
+    float3 v = cross(u, ndir);
+    float4x4 T = float4x4(dir.x, u.x, v.x, pvec.x, dir.y, u.y, v.y, pvec.y, dir.z, u.z, v.z, pvec.z, 0.0, 0.0, 0.0, 1.0);
+
+    // Planes by definition always reach at least two ends of the screen
+    psize = 2.0 * max(wsize.x, wsize.y);
+
+    // Pass T^(-1)M^(-1) to the fragment shader
+    // Compute the inverse of T
+    T = transpose(T);
+    T[0] = float4(ndir / height, 0.0);
+    T[3] = float4(0.0, 0.0, 0.0, 1.0);
+    MTI = ModelViewI;
+    MTI._m03_m13_m23 = MTI._m03_m13_m23 - pvec;
+    MTI = mul(T, MTI);
+
+    // Calculate c3 using the 2nd column of the inverse projection matrix
+    c3 = mul(MTI, ProjI._m02_m12_m22_m32);
+
+    // Compute a of the quadratic equation in the fragment shader here
+    // and use it in the diagonal
+    a = dot(c3, diag * c3);
+    sdiag = diag / a;
+
+    pout = mul(ModelViewProj, float4(pvec, 1.0));
+    cout = color;
+}

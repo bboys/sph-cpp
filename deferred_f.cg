@@ -1,0 +1,31 @@
+float4 main(  float2 coord  : TEXCOORD0,
+              uniform sampler2D color,
+              uniform sampler2D normal,
+              uniform sampler2D pos,
+              uniform float4 lightpos
+            ): COLOR
+{
+    float4 col = tex2D(color, coord);
+
+    float4 norm = tex2D(normal, coord) / col.a;
+    float4 position = tex2D(pos, coord);
+    col = float4(col.rgb / col.a, 1.0);
+
+    float3 l = lightpos.xyz - position.xyz / position.w;
+    l = normalize(l);
+
+    norm.xyz = normalize(norm.xyz);
+
+    float d = dot(norm.xyz , l);
+    float3 r = 2.0 * d * norm.xyz - l;
+    r = normalize(r);
+
+    const float ka = 0.1;
+    const float kd = 0.8;
+    const float ks = 0.5;
+    const float sn = 6.0;
+
+    const float4 lightcolor = float4(1.0, 1.0, 1.0, 1.0);
+
+    return col * (lightcolor * max(0.0, d) * kd + ka) + lightcolor * pow(max(0.0, dot(r, normalize(-position.xyz))), sn) * ks;
+}

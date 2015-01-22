@@ -1,0 +1,27 @@
+void main(float4 col    : TEXCOORD0,
+          float4 diag   : TEXCOORD1,
+          float4 c3     : TEXCOORD2,
+          float4x4 MTI  : TEXCOORD3,
+          float2 wpos   : WPOS,
+  uniform float4x4 ProjI,
+  uniform float2 wsize,
+      out float depthout: COLOR0
+        )
+{
+    float b, c, d, sol;
+    float4 x_c = float4(wpos / wsize * 2.0 - 1.0, 0.0, 1.0);
+    float4 x_e = mul(ProjI, x_c);
+    float4 x_p = mul(MTI, x_e);
+
+    float4 tmp = x_p * diag;
+    b = dot(tmp, c3);
+    c = dot(tmp, x_p);
+
+    d = b * b - c;
+
+    if (d < 0.0)
+        discard;
+
+    sol = -b-sqrt(d);
+    depthout = sol * 0.5 + 0.5;
+}

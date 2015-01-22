@@ -1,0 +1,59 @@
+void main(float4 col    : TEXCOORD0,
+          float3 normal : TEXCOORD1,
+          float3 pxmv   : TEXCOORD2,
+          float3 muxp   : TEXCOORD3,
+          float depthin : TEXCOORD4,
+          float h       : TEXCOORD5,
+          float4 pin    : TEXCOORD6,
+          float2 wpos   : WPOS,
+  uniform float2 unproj_scale,
+  uniform float2 unproj_offset,
+  uniform float near,
+  uniform float zb_scale,
+  uniform float zb_offset,
+  uniform float epsilon,
+  uniform float4x4 ModelViewI,
+  uniform float4 lightpos,
+      out float depthout : DEPTH,
+      out float4 colorout: COLOR0,
+      out float4 colorout2: COLOR1,
+      out float4 colorout3: COLOR2
+        )
+{
+    // Compute the bear plane
+    float3 q = float3(wpos * unproj_scale - unproj_offset, -near);
+
+    float dn = dot(q, float3(0.0, 0.0, h*h));
+    float u = dot(q, pxmv) / dn;
+    float v = dot(q, muxp) / dn;
+
+    float r = u*u + v*v;
+    // Reject fragments if they are too far away
+    if(r > 1.0)
+        discard;
+
+    float lambda = depthin / dn;
+    float gauss = 1.0 - sqrt(r);
+    colorout3 = float4(q * lambda, 1.0);
+    float qz = colorout3.z - epsilon;
+    depthout = zb_scale / qz + zb_offset;
+
+    // Handle single droplets
+    if (length(normal.xyz) < 1e-2)
+    {
+        if (r > 0.25)
+            discard;
+        float4 p = normalize(colorout3 - pin) * sqrt(r);
+        float3 l = normalize(-pin.xyz);
+        colorout2.xyz = normalize(l*pow(1.0-length(p.xyz),2.0) +p.xyz);
+        colorout2.w = 1.0;
+    }
+    else
+    {
+        float l = length(normal);
+        colorout2 = float4(normal / l, l);
+    }
+    colorout = col * gauss;
+    colorout2 *= gauss;
+    colorout3 *= gauss;
+}

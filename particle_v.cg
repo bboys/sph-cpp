@@ -1,0 +1,42 @@
+void main(float3 pvec   : POSITION,
+          float4 color  : COLOR0,
+          float radius  : TEXCOORD0,
+          float3 normal : TEXCOORD1,
+  uniform float4x4 ModelViewProj,
+  uniform float4x4 ModelView,
+  uniform float4x4 ModelViewIT,
+  uniform float2 wsize,
+  uniform float near,
+  uniform float top,
+  uniform float bottom,
+      out float4 pout   : POSITION,
+      out float psize   : PSIZE,
+      out float4 cout   : TEXCOORD0,
+      out float3 nout   : TEXCOORD1,
+      out float3 pxmv   : TEXCOORD2,
+      out float3 muxp   : TEXCOORD3,
+      out float dout    : TEXCOORD4,
+      out float rout    : TEXCOORD5,
+      out float4 pout2  : TEXCOORD6
+        )
+{
+    normal = -normal;
+    radius = radius * 2.0;
+    float4 pvec4 = float4(pvec, 1.0);
+
+    float4 peye = mul(ModelView, pvec4);
+    float3 ueye = float3(radius, 0.0, 0.0);
+    float3 veye = float3(0.0, radius, 0.0);
+
+    pout = mul(ModelViewProj, pvec4);
+    pout2 = peye;
+    psize = 2.0 * radius * (-near / peye.z) * (wsize.y / (top - bottom));
+    cout = color;
+
+    pxmv = cross(peye.xyz, -veye);
+    muxp = cross(-ueye, peye.xyz);
+
+    nout = mul(ModelViewIT, float4(normal, 0.0));
+    dout = dot(peye, float3(0.0, 0.0, radius * radius));
+    rout = radius;
+}
