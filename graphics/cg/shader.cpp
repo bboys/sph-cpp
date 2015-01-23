@@ -58,6 +58,8 @@ void Shader::load_program(ShaderType shader_type, std::string const &filename)
     CGprogram program;
     CGprofile profile;
 
+    std::string path = "graphics/cg/";
+
     assert(cgIsContext(context));
 
     if (shader_type == ShaderType::VERTEX)
@@ -68,7 +70,7 @@ void Shader::load_program(ShaderType shader_type, std::string const &filename)
     if (!silent_shader)
     std::cerr << "Cg program " << filename << " creating." << std::endl;
     program = cgCreateProgramFromFile(context, CG_SOURCE,
-            filename.c_str(), profile, NULL, NULL);
+            (path+filename).c_str(), profile, NULL, NULL);
 
     if(!cgIsProgramCompiled(program)) {
         std::cout << cgGetLastListing(context) << std::endl;

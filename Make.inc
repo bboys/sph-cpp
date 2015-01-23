@@ -1,3 +1,3 @@
-SOURCES =	main.cpp shader.cpp object.cpp scene.cpp sphere.cpp plane.cpp particle.cpp bucket.cpp particlesource.cpp particle_vis.cpp lodepng.cpp
-OBJECTS =	main.o shader.o object.o scene.o sphere.o plane.o particle.o bucket.o particlesource.o particle_vis.o lodepng.o
+SOURCES =	main.cpp graphics/cg/shader.cpp graphics/cg/object.cpp graphics/cg/scene.cpp graphics/cg/sphere.cpp graphics/cg/plane.cpp particle.cpp bucket.cpp particlesource.cpp graphics/cg/particle_vis.cpp
+OBJECTS =	$(SOURCES:.cpp=.o)
 TARGET 	= 	ray

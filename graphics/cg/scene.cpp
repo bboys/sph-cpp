@@ -2,7 +2,6 @@
 #include <math.h>
 #include <cassert>
 #include <cstring>
-#include "lodepng.h"
 #include "shader.h"
 
 void Scene::set_perspective(GLdouble fovy, GLdouble aspect, GLdouble zNear, GLdouble zFar)
