@@ -81,11 +81,11 @@ void init()
     float pos[3] = {0.9f,0.9f,0.9f};
     float velocity[3] = {0.0f,0.0f,0.0f};
     velocity[0] = -3.0f;
-    particlesources.push_back(ParticleSource(pos, color, buckets, &scene.particles, mps, velocity, max_particles/2));
+    particlesources.push_back(ParticleSource(pos, color, buckets, scene.particles.get(), mps, velocity, max_particles/2));
     pos[0] = -0.9f;
     pos[2] = -0.9f;
     velocity[0] = 3.0f;
-    particlesources.push_back(ParticleSource(pos, color, buckets, &scene.particles, mps, velocity, max_particles/2));
+    particlesources.push_back(ParticleSource(pos, color, buckets, scene.particles.get(), mps, velocity, max_particles/2));
 
 
     scene.init_shaders();
@@ -141,7 +141,7 @@ void display_fps()
     }
     sprintf(fps_text, "FPS: %6.2f", fps);
     sprintf(nnp_text, "NNP: %6.2f", num_neighbour_particles);
-    sprintf(particle_text, " NP: %6zu", scene.particles.size());
+    sprintf(particle_text, " NP: %6zu", scene.particles->size());
 
     glDisable(GL_LIGHTING);
     glDisable(GL_DEPTH_TEST);
@@ -274,7 +274,7 @@ void display()
             tstep2 = 1.0f / fps * 0.5f;
         else
             tstep2 = tstep[tstep_toggle];
-        scene.particles.update(tstep2);
+        scene.particles->update(tstep2);
         for (std::vector<ParticleSource>::iterator it = particlesources.begin(); it != particlesources.end(); ++it)
             it->update(tstep2);
     }
@@ -330,7 +330,7 @@ void keyboard(unsigned char key, int x, int y)
             return;
         case 'y':
         case 'Y':
-            scene.particles.toggle_2d_mode();
+            scene.particles->toggle_2d_mode();
             return;
         case 'g':
         case 'G':

@@ -10,6 +10,7 @@
 #include "particle_vis.h"
 #include "plane.h"
 #include "shader.h"
+#include <memory>
 
 class Scene
 {
@@ -21,7 +22,7 @@ class Scene
     GLdouble left;
 
 public:
-    Particles particles;
+    std::shared_ptr<Graphics::Base::Particles> particles;
     Planes planes;
 
 private:

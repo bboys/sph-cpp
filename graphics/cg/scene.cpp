@@ -133,7 +133,7 @@ void Scene::set_parameters(Objects<T> &objects)
 void Scene::draw_particles()
 {
     if (opengl_enabled)
-        particles.draw_opengl();
+        particles->draw_opengl();
     else
         draw_particles_from_shader();
 }
@@ -173,11 +173,11 @@ void Scene::draw_particles_color_only()
 
 void Scene::draw_particles_from_shader(size_t index)
 {
-    set_parameters(particles);
+    set_parameters(*particles);
     if (vbo_enabled)
-        particles.draw(index);
+        particles->draw(index);
     else
-        particles.draw_no_vbo(index);
+        particles->draw_no_vbo(index);
 }
 
 void Scene::draw_planes()
@@ -455,11 +455,11 @@ void Scene::reshape()
 void Scene::init_shaders()
 {
     if (water_enabled)
-        particles.init_water_shader();
+        particles->init_water_shader();
     else if (deferred_enabled)
-        particles.init_shader();
+        particles->init_shader();
     else
-        particles.init_old_shader();
+        particles->init_old_shader();
 
     if (deferred_enabled)
         planes.init_shader();
@@ -566,7 +566,7 @@ void Scene::set_size(int w, int h)
 
 Scene::Scene()
 :
-    particles(),
+    particles(new Graphics::Cg::Particles()),
     planes(),
     fbo_array(),
     opengl_enabled(false),
@@ -580,11 +580,12 @@ Scene::Scene()
     tex_array(),
     renderbuffer_array(),
     epsilon(0.0f)
-{}
+{
+}
 
 Scene::Scene(int width, int height)
 :
-    particles(),
+    particles(new Graphics::Cg::Particles()),
     planes(),
     fbo_array(),
     opengl_enabled(false),
@@ -600,4 +601,5 @@ Scene::Scene(int width, int height)
     epsilon(0.0f),
     width(width),
     height(height)
-{}
+{
+}

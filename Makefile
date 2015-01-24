@@ -27,7 +27,7 @@ else
     NVSDKINC	=	-I./graphics/cg -I./
     NVSDKLIB	=	-lCgGL -lCg -lglut -lGLU -lGLEW -lpng -lpthread -lGL
     CXX		=	g++
-    CXXFLAGS	=	$(APP_FLAGS) -std=c++0x -O3 -fopenmp
+    CXXFLAGS	=	$(APP_FLAGS) -std=c++11 -O3 -fopenmp
     LINK	=	g++
     LIBS	=	-L/usr/lib -L/usr/local/lib -lm 
 endif

@@ -7,10 +7,13 @@
 
 #include "shader.h"
 
+namespace Graphics {
+
+namespace Cg {
+
 Particles::Particles()
 :
-    ParticlesBase(),
-    twod_enabled(false)
+    Base::Particles()
 {}
 
 Particles::~Particles()
@@ -99,19 +102,6 @@ void Particles::init_water_shader()
     Objects<Particle>::init_shader();
 }
 
-void Particles::toggle_2d_mode()
-{
-    twod_enabled = !twod_enabled;
 }
 
-void Particles::update(float tstep)
-{
-    ParticlesBase::update(tstep);
-
-    for (size_t it = 0; it < size(); ++it)
-        if (twod_enabled)
-        {
-            at(it).position[2] = 0.0f;
-            at(it).velocity[2] = 0.0f;
-        }
 }
