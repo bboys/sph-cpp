@@ -27,7 +27,7 @@ else
     NVSDKINC	=	-I./graphics/cg -I./
     NVSDKLIB	=	-lCgGL -lCg -lglut -lGLU -lGLEW -lpng -lpthread -lGL
     CXX		=	g++
-    CXXFLAGS	=	$(APP_FLAGS) -std=c++11 -O3 -fopenmp
+    CXXFLAGS	=	$(APP_FLAGS) -g -std=c++11 -fopenmp
     LINK	=	g++
     LIBS	=	-L/usr/lib -L/usr/local/lib -lm 
 endif
@@ -35,7 +35,7 @@ endif
 REGULAR = 	-O3 -pipe -Wall -fno-strength-reduce -fPIC
 APP_FLAGS=	-Wall -DUNIX
 INCPATH	=	$(NVSDKINC)
-LFLAGS	= 	-fPIC 
+LFLAGS	= 	-fPIC -g
 TAR	=	tar -cf
 GZIP	=	gzip -9f
 NASM	=	nasm -f elf 
@@ -50,7 +50,9 @@ include Make.inc
 OBJ = $(addprefix $(BUILDDIR)/, $(OBJECTS))
 TGT = $(addprefix $(BUILDDIR)/, $(TARGET))
 
-all: checkdirs $(TGT) strip
+all: checkdirs $(TGT)
+
+#~ all: checkdirs $(TGT) strip
 
 prof: checkdirs proflink $(TGT)
 
@@ -72,6 +74,7 @@ proflink:
 
 $(BUILDDIR):
 	@mkdir -p $@/graphics/cg
+	@mkdir -p $@/graphics/opengl
 
 clean:
 	-rm -rf $(BUILDDIR)

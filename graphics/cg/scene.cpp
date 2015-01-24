@@ -3,6 +3,7 @@
 #include <cassert>
 #include <cstring>
 #include "shader.h"
+#include "graphics/opengl/particle.h"
 
 void Scene::set_perspective(GLdouble fovy, GLdouble aspect, GLdouble zNear, GLdouble zFar)
 {
@@ -133,7 +134,7 @@ void Scene::set_parameters(Objects<T> &objects)
 void Scene::draw_particles()
 {
     if (opengl_enabled)
-        particles->draw_opengl();
+        particles->draw();
     else
         draw_particles_from_shader();
 }
@@ -173,7 +174,7 @@ void Scene::draw_particles_color_only()
 
 void Scene::draw_particles_from_shader(size_t index)
 {
-    set_parameters(*particles);
+    set_parameters(*particles->get_particles());
     if (vbo_enabled)
         particles->draw(index);
     else
@@ -524,6 +525,20 @@ void Scene::save_to_png(std::string const &filename)
 void Scene::toggle_opengl()
 {
     opengl_enabled = !opengl_enabled;
+
+    std::shared_ptr<Graphics::Base::Particles> new_particles;
+    if (opengl_enabled)
+        new_particles = std::make_shared<Graphics::OpenGL::Particles>(*particles);
+    else
+        new_particles = std::make_shared<Graphics::Cg::Particles>(*particles);
+
+    if (!new_particles)
+    {
+        std::cerr << "Something went wrong with casting between OpenGL and Cg particles" << std::endl;
+        return;
+    }
+
+    particles = new_particles;
 }
 
 void Scene::toggle_normals()

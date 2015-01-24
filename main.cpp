@@ -81,11 +81,11 @@ void init()
     float pos[3] = {0.9f,0.9f,0.9f};
     float velocity[3] = {0.0f,0.0f,0.0f};
     velocity[0] = -3.0f;
-    particlesources.push_back(ParticleSource(pos, color, buckets, scene.particles.get(), mps, velocity, max_particles/2));
+    particlesources.push_back(ParticleSource(pos, color, buckets, scene.particles->get_particles().get(), mps, velocity, max_particles/2));
     pos[0] = -0.9f;
     pos[2] = -0.9f;
     velocity[0] = 3.0f;
-    particlesources.push_back(ParticleSource(pos, color, buckets, scene.particles.get(), mps, velocity, max_particles/2));
+    particlesources.push_back(ParticleSource(pos, color, buckets, scene.particles->get_particles().get(), mps, velocity, max_particles/2));
 
 
     scene.init_shaders();
@@ -141,7 +141,7 @@ void display_fps()
     }
     sprintf(fps_text, "FPS: %6.2f", fps);
     sprintf(nnp_text, "NNP: %6.2f", num_neighbour_particles);
-    sprintf(particle_text, " NP: %6zu", scene.particles->size());
+    sprintf(particle_text, " NP: %6zu", scene.particles->get_particles()->size());
 
     glDisable(GL_LIGHTING);
     glDisable(GL_DEPTH_TEST);

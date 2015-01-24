@@ -1,21 +1,21 @@
-#ifndef PARTICLE_VIS_H_ICS
-#define PARTICLE_VIS_H_ICS
+#ifndef SPH_GRAPHICS_OPENGL_PARTICLE_H
+#define SPH_GRAPHICS_OPENGL_PARTICLE_H
 
 #include "graphics/base/particle.h"
-#include "shader.h"
 
 namespace Graphics {
 
-namespace Cg {
+namespace OpenGL {
 
 class Particles : public Base::Particles
 {
-    Shader &shader;
 public:
     Particles();
-    Particles(Base::Particles const &other): Base::Particles(other), shader(particles->shader) {};
+    Particles(Base::Particles const &other): Base::Particles(other){};
+    Particles(Particles &&) = default;
     virtual ~Particles();
     void draw(size_t index = 0);
+    void draw_opengl();
     void draw_no_vbo(size_t index = 0);
     void init_shader();
     void init_old_shader();
