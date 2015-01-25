@@ -10,27 +10,16 @@
 
 #include "shader.h"
 
-Plane::Plane(float position[3], float color[4], float dir[3])
-:
-    Object(position, color)
-{
-    memcpy(direction, dir, sizeof(float)*3);
-}
+namespace Graphics {
+
+namespace Cg {
+
+using namespace Base;
 
 Planes::~Planes()
 {
     if (vbo_id)
         glDeleteBuffersARB(1, &vbo_id);
-}
-
-void Planes::draw_opengl()
-{
-    for (std::vector<Plane>::iterator it = this->begin(); it != this->end(); ++it)
-    {
-        glPushMatrix();
-        glColor4fv(it->color);
-        glPopMatrix();
-    }
 }
 
 void Planes::draw(size_t index)
@@ -120,4 +109,8 @@ void Planes::init_old_shader()
     shader.load_program(ShaderType::FRAGMENT, "plane_old_f.cg");
 
     Objects<Plane>::init_shader();
+}
+
+}
+
 }

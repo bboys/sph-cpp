@@ -93,8 +93,6 @@ void init()
 
 void construct_planes()
 {
-    scene.planes = Planes();
-
     float pos[3] = {0.0f, 0.0f, -10.0f};
     float color[4] = {1.0f, 1.0f, 1.0f, 1.0f};
     float direction[3] = {0.0f, 0.0f, 0.0f};
@@ -103,8 +101,8 @@ void construct_planes()
     {
         direction[idx] = 1.0f;
         pos[idx] = -3.0f;
-        Plane obj(pos, color, direction);
-        scene.planes.push_back(obj);
+        Graphics::Base::Plane obj(pos, color, direction);
+        scene.planes->push_back(std::move(obj));
         direction[idx] = 0.0f;
         pos[idx] = 0.0f;
     }

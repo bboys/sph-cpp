@@ -1,4 +1,4 @@
-#include "particle.h"
+#include "graphics/opengl/particle.h"
 
 #define GL_GLEXT_PROTOTYPES
 

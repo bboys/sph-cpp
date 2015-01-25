@@ -1,11 +1,11 @@
-#ifndef SPH_GRAPHICS_CG_PLANE_H
-#define SPH_GRAPHICS_CG_PLANE_H
+#ifndef SPH_GRAPHICS_OPENGL_PLANE_H
+#define SPH_GRAPHICS_OPENGL_PLANE_H
 
 #include "graphics/base/plane.h"
 
 namespace Graphics {
 
-namespace Cg {
+namespace OpenGL {
 
 class Planes : public Base::Planes
 {

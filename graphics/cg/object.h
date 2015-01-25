@@ -4,6 +4,7 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <memory>
 #include "shader.h"
 
 typedef std::map<std::string, ParameterList > ParameterMap;
@@ -21,9 +22,18 @@ public:
 template <class T>
 class Objects : public std::vector<T>
 {
+    std::shared_ptr<Shader> shader_ptr;
 public:
-    Shader shader;
+    Shader &shader;
     ParameterMap parameters;
+
+    Objects(): shader_ptr(new Shader), shader(*shader_ptr), parameters() {};
+    Objects(Objects const &other)
+    :
+        shader_ptr(other.shader_ptr),
+        shader(*shader_ptr),
+        parameters(other.parameters)
+    {};
 
     void draw();
     void ogl_draw();

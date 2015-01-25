@@ -4,6 +4,7 @@
 #include <cstring>
 #include "shader.h"
 #include "graphics/opengl/particle.h"
+#include "graphics/opengl/plane.h"
 
 void Scene::set_perspective(GLdouble fovy, GLdouble aspect, GLdouble zNear, GLdouble zFar)
 {
@@ -184,18 +185,18 @@ void Scene::draw_particles_from_shader(size_t index)
 void Scene::draw_planes()
 {
     if (opengl_enabled)
-        planes.draw_opengl();
+        planes->draw();
     else
         draw_planes_from_shader();
 }
 
 void Scene::draw_planes_from_shader(size_t index)
 {
-    set_parameters(planes);
+    set_parameters(*planes);
     if (vbo_enabled)
-        planes.draw(index);
+        planes->draw(index);
     else
-        planes.draw_no_vbo(index);
+        planes->draw_no_vbo(index);
 }
 
 void Scene::draw_shadow_map()
@@ -463,11 +464,11 @@ void Scene::init_shaders()
         particles->init_old_shader();
 
     if (deferred_enabled)
-        planes.init_shader();
+        planes->init_shader();
     else
-        planes.init_old_shader();
+        planes->init_old_shader();
     if (vbo_enabled)
-        planes.init_vbo();
+        planes->init_vbo();
 }
 
 void Scene::bind_fbo(size_t index)
@@ -539,6 +540,20 @@ void Scene::toggle_opengl()
     }
 
     particles = new_particles;
+
+    std::shared_ptr<Graphics::Base::Planes> new_planes;
+    if (opengl_enabled)
+        new_planes = std::make_shared<Graphics::OpenGL::Planes>(*planes);
+    else
+        new_planes = std::make_shared<Graphics::Cg::Planes>(*planes);
+
+    if (!new_planes)
+    {
+        std::cerr << "Something went wrong with casting between OpenGL and Cg planes" << std::endl;
+        return;
+    }
+
+    planes = new_planes;
 }
 
 void Scene::toggle_normals()
@@ -582,7 +597,7 @@ void Scene::set_size(int w, int h)
 Scene::Scene()
 :
     particles(new Graphics::Cg::Particles()),
-    planes(),
+    planes(new Graphics::Cg::Planes()),
     fbo_array(),
     opengl_enabled(false),
     deferred_enabled(false),
@@ -601,7 +616,7 @@ Scene::Scene()
 Scene::Scene(int width, int height)
 :
     particles(new Graphics::Cg::Particles()),
-    planes(),
+    planes(new Graphics::Cg::Planes()),
     fbo_array(),
     opengl_enabled(false),
     deferred_enabled(false),

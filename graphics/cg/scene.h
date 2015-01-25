@@ -6,7 +6,8 @@
 #include <Cg/cg.h>
 #include <Cg/cgGL.h>
 #include <vector>
-#include "particle.h"
+#include "graphics/base/particle.h"
+#include "graphics/base/plane.h"
 #include "particle_vis.h"
 #include "plane.h"
 #include "shader.h"
@@ -23,7 +24,7 @@ class Scene
 
 public:
     std::shared_ptr<Graphics::Base::Particles> particles;
-    Planes planes;
+    std::shared_ptr<Graphics::Base::Planes> planes;
 
 private:
     GLuint fbo_array[3];
