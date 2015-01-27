@@ -1,9 +1,11 @@
-#ifndef BUCKET_H_ICS
-#define BUCKET_H_ICS
+#ifndef SPH_PHYSICS_BUCKET_H
+#define SPH_PHYSICS_BUCKET_H
 
 #include <list>
 #include <vector>
 #include "particle.h"
+
+namespace Physics {
 
 class Bucket;
 
@@ -38,5 +40,7 @@ public:
 private:
     void add_neighbours(Bucket &bucket, size_t i, size_t j, size_t k);
 };
+
+}
 
 #endif

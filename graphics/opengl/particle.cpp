@@ -20,12 +20,14 @@ Particles::~Particles()
 
 void Particles::draw(size_t index)
 {
-    for (std::vector<Particle>::iterator it = particles->begin(); it != particles->end(); ++it)
+    std::vector<Base::Particle>::iterator it = begin();
+    std::vector<Physics::Particle>::iterator it2 = particles->begin();
+    for ( ;it != end(), it2 != particles->end();++it, ++it2)
     {
         glPushMatrix();
         glColor4fv(it->color);
-        glTranslatef(it->position[0], it->position[1], it->position[2]);
-        glutSolidSphere(it->radius, 8, 8);
+        glTranslatef(it2->position[0], it2->position[1], it2->position[2]);
+        glutSolidSphere(it2->radius, 8, 8);
         glPopMatrix();
     }
 }

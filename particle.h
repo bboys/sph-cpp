@@ -1,10 +1,11 @@
-#ifndef PARTICLE_H_ICS
-#define PARTICLE_H_ICS
+#ifndef SPH_PHYSICS_PARTICLE_H
+#define SPH_PHYSICS_PARTICLE_H
 
-#include "object.h"
 #include "utils.h"
 #include <list>
 #include <vector>
+
+namespace Physics {
 
 class Bucket;
 class Particle;
@@ -23,12 +24,15 @@ extern float mass_0;
 extern float density_0;
 extern float pressure_0;
 
+extern float num_neighbour_particles;
+
 typedef std::list<Particle *> ParticleVec;
 typedef std::list<Particle *>::iterator ParticleIter;
 
-class Particle : public Object
+class Particle
 {
 public:
+    float position[3];
     float radius;
     float velocity[3];
     float normal[3];
@@ -56,7 +60,7 @@ protected:
 public:
     Particle() = delete;
     ~Particle();
-    Particle(float position[3], float color[4], Buckets *buckets);
+    Particle(float position[3], Buckets *buckets);
     Particle(const Particle &other);
     Particle(Particle &&other);
 
@@ -98,12 +102,14 @@ protected:
     void get_normal_by_idx(float out[3], size_t idx);
 };
 
-class ParticlesBase : public Objects<Particle>
+class ParticlesBase : public std::vector<Particle>
 {
 public:
     ParticlesBase();
     virtual ~ParticlesBase();
     void update(float tstep);
 };
+
+}
 
 #endif

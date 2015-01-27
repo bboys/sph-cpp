@@ -13,8 +13,7 @@ namespace Cg {
 
 Particles::Particles()
 :
-    Base::Particles(),
-    shader(particles->shader)
+    Base::Particles()
 {}
 
 Particles::~Particles()
@@ -34,18 +33,18 @@ void Particles::draw_no_vbo(size_t index)
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
 
     glEnableClientState(GL_VERTEX_ARRAY);
-    glVertexPointer(3, GL_FLOAT, sizeof(Particle), &(*particles)[0].position);
+    glVertexPointer(3, GL_FLOAT, sizeof(Physics::Particle), &(*particles)[0].position);
 
     glEnableClientState(GL_COLOR_ARRAY);
-    glColorPointer(4, GL_FLOAT, sizeof(Particle), &(*particles)[0].color);
+    glColorPointer(4, GL_FLOAT, sizeof(Graphics::Base::Particle), &(*this)[0].color);
 
     glClientActiveTexture(GL_TEXTURE0);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glTexCoordPointer(1, GL_FLOAT, sizeof(Particle), &(*particles)[0].radius);
+    glTexCoordPointer(1, GL_FLOAT, sizeof(Physics::Particle), &(*particles)[0].radius);
 
     glClientActiveTexture(GL_TEXTURE1);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glTexCoordPointer(3, GL_FLOAT, sizeof(Particle), &(*particles)[0].normal);
+    glTexCoordPointer(3, GL_FLOAT, sizeof(Physics::Particle), &(*particles)[0].normal);
 
     glDrawArrays(GL_POINTS, 0, particles->size());
 
@@ -69,7 +68,7 @@ void Particles::init_shader()
     shader.load_program(ShaderType::FRAGMENT, "sphere_f.cg");
     shader.load_program(ShaderType::FRAGMENT, "sphere_shadows_f.cg");
 
-    particles->init_shader();
+    Objects<Graphics::Base::Particle>::init_shader();
 }
 
 void Particles::init_old_shader()
@@ -78,7 +77,7 @@ void Particles::init_old_shader()
     shader.load_program(ShaderType::VERTEX, "sphere_v.cg");
     shader.load_program(ShaderType::FRAGMENT, "sphere_old_f.cg");
 
-    particles->init_shader();
+    Objects<Graphics::Base::Particle>::init_shader();
 }
 
 void Particles::init_water_shader()
@@ -88,7 +87,7 @@ void Particles::init_water_shader()
     shader.load_program(ShaderType::VERTEX, "particle_v.cg");
     shader.load_program(ShaderType::FRAGMENT, "particle_f.cg");
 
-    particles->init_shader();
+    Objects<Graphics::Base::Particle>::init_shader();
 }
 
 }

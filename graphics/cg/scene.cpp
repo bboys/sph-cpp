@@ -175,7 +175,7 @@ void Scene::draw_particles_color_only()
 
 void Scene::draw_particles_from_shader(size_t index)
 {
-    set_parameters(*particles->get_particles());
+    set_parameters(*particles);
     if (vbo_enabled)
         particles->draw(index);
     else

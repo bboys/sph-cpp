@@ -3,6 +3,8 @@
 #include <cassert>
 #include "utils.h"
 
+namespace Physics {
+
 void Bucket::remove_particle(Particle *particle)
 {
     particles.remove(particle);
@@ -82,4 +84,6 @@ Bucket *Buckets::get_bucket(float pos[3])
     k = clamp(k, 0, static_cast<int>(z_size + 1));
 
     return &buckets[i][j][k];
+}
+
 }

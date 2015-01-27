@@ -5,6 +5,8 @@
 #include <cassert>
 #include <cstring>
 
+namespace Physics {
+
 //~ const float mass_0 = 1000000.0;
 //~ const float mass_0 = 100.0;
 //~ const float mass_0 = 1.0;
@@ -46,9 +48,8 @@ std::vector<float> Particle::wall_vis_vec = std::vector<float>();
 float num_neighbour_particles = 0.0f;
 
 
-Particle::Particle(float position[3], float color[4], Buckets *buckets)
+Particle::Particle(float p[3], Buckets *buckets)
 :
-    Object(position, color),
     radius(r_0),
     velocity{0.0f, 0.0f, 0.0f},
     normal{},
@@ -66,6 +67,7 @@ Particle::Particle(float position[3], float color[4], Buckets *buckets)
     d_bucket(NULL),
     d_buckets(buckets)
 {
+    memcpy(position, p, sizeof(float)*3);
     update_bucket(true);
 }
 
@@ -76,7 +78,6 @@ Particle::~Particle()
 
 Particle::Particle(Particle const &other)
 :
-    Object(other.position, other.color),
     radius(other.radius),
     mass(other.mass),
     density(other.density),
@@ -89,6 +90,7 @@ Particle::Particle(Particle const &other)
     d_buckets(other.d_buckets)
 {
     static const size_t sizeofvec = sizeof(float)*3;
+    memcpy(position, other.position, sizeofvec);
     memcpy(velocity, other.velocity, sizeofvec);
     memcpy(normal, other.normal, sizeofvec);
     memcpy(acceleration, other.acceleration, sizeofvec);
@@ -100,7 +102,6 @@ Particle::Particle(Particle const &other)
 
 Particle::Particle(Particle &&other)
 :
-    Object(other.position, other.color),
     radius(other.radius),
     mass(other.mass),
     density(other.density),
@@ -113,6 +114,7 @@ Particle::Particle(Particle &&other)
     d_buckets(other.d_buckets)
 {
     static const size_t sizeofvec = sizeof(float)*3;
+    memcpy(position, other.position, sizeofvec);
     memcpy(velocity, other.velocity, sizeofvec);
     memcpy(normal, other.normal, sizeofvec);
     memcpy(acceleration, other.acceleration, sizeofvec);
@@ -459,14 +461,12 @@ void Particle::init_wall()
             for (float z = -10.0f*r_0; z <= 0.0f; z += 2*r_0 - eps)
             {
                 float pos[3] = {x, y, z};
-                float color[4] = {0.0f, 0.0f, 1.0f, 1.0f};
-                wallparticles.push_back(Particle(pos, color, &wallbucket));
+                wallparticles.push_back(Particle(pos, &wallbucket));
                 //~ wallparticles.back().mass = 0.1f;
                 wallparticles.back().density = wallparticles.back().mass / mass_0 * wallparticles.back().density;
             }
     float pos[3] = {0.0f, 0.0f, 0.5f};
-    float color[4] = {0.0f, 0.0f, 1.0f, 1.0f};
-    wallparticles.push_back(Particle(pos, color, &wallbucket));
+    wallparticles.push_back(Particle(pos, &wallbucket));
 
     Particle &last_particle = wallparticles.back();
     last_particle.velocity[0] = 1.0f;
@@ -489,7 +489,7 @@ void Particle::update_press()
 
 ParticlesBase::ParticlesBase()
 :
-    Objects<Particle>()
+    std::vector<Particle>()
 {}
 
 ParticlesBase::~ParticlesBase()
@@ -532,4 +532,6 @@ void ParticlesBase::update(float tstep)
 
     for (it = 0; it < size(); ++it)
         at(it).update_position(tstep);
+}
+
 }

@@ -27,16 +27,14 @@ public:
     Shader &shader;
     ParameterMap parameters;
 
-    Objects(): shader_ptr(new Shader), shader(*shader_ptr), parameters() {};
+    Objects(): shader_ptr(new Shader()), shader(*shader_ptr), parameters() {};
     Objects(Objects const &other)
     :
+        std::vector<T>(other),
         shader_ptr(other.shader_ptr),
         shader(*shader_ptr),
         parameters(other.parameters)
     {};
-
-    void draw();
-    void ogl_draw();
 
     void add_parameter(std::string const &name)
     {

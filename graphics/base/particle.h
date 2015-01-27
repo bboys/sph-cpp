@@ -3,20 +3,40 @@
 
 #include "../../particle.h"
 #include <memory>
+#include "object.h"
 
 namespace Graphics {
 
 namespace Base {
 
-class Particles
+class Particle : public Object
+{
+public:
+    Particle(Particle const &other)
+    :
+        Object(other)
+    {};
+
+    Particle(float position[3], float color[4])
+    :
+        Object(position, color)
+    {};
+
+    Particle(Physics::Particle &particle, float color[4])
+    :
+        Object(particle.position, color)
+    {};
+};
+
+class Particles : public Objects<Particle>
 {
 protected:
-    std::shared_ptr<ParticlesBase> particles;
+    std::shared_ptr<Physics::ParticlesBase> particles;
 private:
     bool twod_enabled;
 public:
-    Particles(): particles(new ParticlesBase()), twod_enabled(false) {};
-    Particles(Particles const &other): particles(other.particles), twod_enabled(other.twod_enabled) {};
+    Particles(): Objects(), particles(new Physics::ParticlesBase()), twod_enabled(false) {};
+    Particles(Particles const &other): Objects(other), particles(other.particles), twod_enabled(other.twod_enabled) {};
     virtual ~Particles() {};
 
     void update(float tstep)
@@ -38,8 +58,8 @@ public:
     virtual void init_water_shader() = 0;
     void toggle_2d_mode() {twod_enabled = !twod_enabled;};
 
-    void set_particles(std::shared_ptr<ParticlesBase> new_particles) {particles = new_particles;};
-    std::shared_ptr<ParticlesBase> get_particles() {return particles;};
+    void set_particles(std::shared_ptr<Physics::ParticlesBase> new_particles) {particles = new_particles;};
+    std::shared_ptr<Physics::ParticlesBase> get_particles() {return particles;};
 };
 
 }

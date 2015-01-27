@@ -50,7 +50,6 @@ int mouse_dy = 0;
 
 float max_zpos = 200.0f;
 float fps = 100.0f;
-extern float num_neighbour_particles;
 
 bool paused = false;
 
@@ -62,30 +61,30 @@ size_t max_particles = 3000;
 float max_particle_boundary = 0.5f;
 float particle_middle = 0.0f;
 size_t bucket_num = 20;
-Buckets *buckets = new Buckets(bucket_num, bucket_num, bucket_num);
+Physics::Buckets *buckets = new Physics::Buckets(bucket_num, bucket_num, bucket_num);
 std::vector<ParticleSource> particlesources;
 float tstep[3] = {1e-2f, 1e-3f,5e-2f};
 bool shit_is_aan = false;
 bool fps_toggle = false;
 int tstep_toggle = 0;
-float mps = mass_0 * 50;
+float mps = Physics::mass_0 * 50;
 
 int png_iter = 0;
 
 void init()
 {
-    Particle::init_wall();
+    Physics::Particle::init_wall();
     float color[4] = {0.0f, 0.0f, 1.0f, 1.0f};
 
     //add particle source
     float pos[3] = {0.9f,0.9f,0.9f};
     float velocity[3] = {0.0f,0.0f,0.0f};
     velocity[0] = -3.0f;
-    particlesources.push_back(ParticleSource(pos, color, buckets, scene.particles->get_particles().get(), mps, velocity, max_particles/2));
+    particlesources.push_back(ParticleSource(pos, color, buckets, &scene.particles, mps, velocity, max_particles/2));
     pos[0] = -0.9f;
     pos[2] = -0.9f;
     velocity[0] = 3.0f;
-    particlesources.push_back(ParticleSource(pos, color, buckets, scene.particles->get_particles().get(), mps, velocity, max_particles/2));
+    particlesources.push_back(ParticleSource(pos, color, buckets, &scene.particles, mps, velocity, max_particles/2));
 
 
     scene.init_shaders();
@@ -138,7 +137,7 @@ void display_fps()
         frame = 0;
     }
     sprintf(fps_text, "FPS: %6.2f", fps);
-    sprintf(nnp_text, "NNP: %6.2f", num_neighbour_particles);
+    sprintf(nnp_text, "NNP: %6.2f", Physics::num_neighbour_particles);
     sprintf(particle_text, " NP: %6zu", scene.particles->get_particles()->size());
 
     glDisable(GL_LIGHTING);
@@ -415,11 +414,11 @@ void rotate(float vec[3])
 
 void idle()
 {
-    set_zero(Acc_ext);
-    memcpy(gravity, gravity_0, 3*sizeof(float));
+    set_zero(Physics::Acc_ext);
+    memcpy(Physics::gravity, Physics::gravity_0, 3*sizeof(float));
 
     if (shit_is_aan)
-        rotate(gravity);
+        rotate(Physics::gravity);
 
     switch (mouse_mode)
     {
@@ -431,9 +430,9 @@ void idle()
         case MouseMode::PANNING:
             camera_x += 1.0 / 5000 * mouse_dx;
             camera_y -= 1.0 / 5000 * mouse_dy;
-            Acc_ext[0] = -1.0 / 5000 * mouse_dx / tstep[tstep_toggle];
-            Acc_ext[1] = 1.0 / 5000 * mouse_dy / tstep[tstep_toggle];
-            rotate(Acc_ext);
+            Physics::Acc_ext[0] = -1.0 / 5000 * mouse_dx / tstep[tstep_toggle];
+            Physics::Acc_ext[1] = 1.0 / 5000 * mouse_dy / tstep[tstep_toggle];
+            rotate(Physics::Acc_ext);
             break;
 
         case MouseMode::ROTATING:
@@ -458,25 +457,25 @@ int main(int argc, char *argv[])
         switch (c)
         {
             case 'p':
-                stiffness = atof(optarg);
+                Physics::stiffness = atof(optarg);
                 break;
             case 's':
-                sigma = atof(optarg);
+                Physics::sigma = atof(optarg);
                 break;
             case 'u':
-                mu = atof(optarg);
+                Physics::mu = atof(optarg);
                 break;
             case 'r':
-                r_0 = atof(optarg);
+                Physics::r_0 = atof(optarg);
                 break;
             case 'f':
-                radius_factor = atof(optarg);
+                Physics::radius_factor = atof(optarg);
                 break;
             case 'm':
-                mass_0 = atof(optarg);
+                Physics::mass_0 = atof(optarg);
                 break;
             case 'd':
-                density_0 = atof(optarg);
+                Physics::density_0 = atof(optarg);
                 break;
             case 'n':
                 max_particles = atoi(optarg);
@@ -488,13 +487,13 @@ int main(int argc, char *argv[])
                 break;
         }
     }
-    std::cout << "stiffness (p): "; dump(stiffness);
-    std::cout << "surface tension (s): "; dump(sigma);
-    std::cout << "dynamic viscosity (u): "; dump(mu);
-    std::cout << "particle radius (r): "; dump(r_0);
-    std::cout << "smoothing factor (f): "; dump(radius_factor);
-    std::cout << "particle mass (m): "; dump(mass_0);
-    std::cout << "density (d): "; dump(density_0);
+    std::cout << "stiffness (p): "; dump(Physics::stiffness);
+    std::cout << "surface tension (s): "; dump(Physics::sigma);
+    std::cout << "dynamic viscosity (u): "; dump(Physics::mu);
+    std::cout << "particle radius (r): "; dump(Physics::r_0);
+    std::cout << "smoothing factor (f): "; dump(Physics::radius_factor);
+    std::cout << "particle mass (m): "; dump(Physics::mass_0);
+    std::cout << "density (d): "; dump(Physics::density_0);
     std::cout << "number of particles (n): "; dump(max_particles);
     std::cout << "particle spawning rate (q): "; dump(mps);
     std::cout << "timestep: "; dump(tstep[tstep_toggle]);

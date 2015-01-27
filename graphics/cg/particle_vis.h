@@ -10,10 +10,9 @@ namespace Cg {
 
 class Particles : public Base::Particles
 {
-    Shader &shader;
 public:
     Particles();
-    Particles(Base::Particles const &other): Base::Particles(other), shader(particles->shader) {};
+    Particles(Base::Particles const &other): Base::Particles(other) {};
     virtual ~Particles();
     void draw(size_t index = 0);
     void draw_no_vbo(size_t index = 0);
