@@ -240,7 +240,7 @@ void Scene::draw_normpass()
     if (normals_enabled)
         shader_index = 1;
 
-    shader.bind_program(ShaderType::FRAGMENT, shader_index);
+    shader.bind_program(Graphics::ShaderType::FRAGMENT, shader_index);
 
     draw_fullscreen_quad();
 
@@ -255,7 +255,7 @@ void Scene::draw_contours()
     if (contour_enabled)
     {
         set_parameters();
-        shader.bind_program(ShaderType::FRAGMENT, 3);
+        shader.bind_program(Graphics::ShaderType::FRAGMENT, 3);
     }
     else
     {
@@ -350,11 +350,11 @@ void Scene::reshape()
     //~ static const int shadow_map_size = 512;
     shader.init();
 
-    shader.load_program(ShaderType::FRAGMENT, "shading_f.cg");
-    shader.load_program(ShaderType::FRAGMENT, "normals_f.cg");
-    shader.load_program(ShaderType::FRAGMENT, "deferred_f.cg");
-    shader.load_program(ShaderType::FRAGMENT, "contour_f.cg");
-    shader.bind_program(ShaderType::FRAGMENT);
+    shader.load_program(Graphics::ShaderType::FRAGMENT, "shading_f.cg");
+    shader.load_program(Graphics::ShaderType::FRAGMENT, "normals_f.cg");
+    shader.load_program(Graphics::ShaderType::FRAGMENT, "deferred_f.cg");
+    shader.load_program(Graphics::ShaderType::FRAGMENT, "contour_f.cg");
+    shader.bind_program(Graphics::ShaderType::FRAGMENT);
 
     parameters.clear();
 

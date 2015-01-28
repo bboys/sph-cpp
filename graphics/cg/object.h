@@ -7,6 +7,8 @@
 #include <memory>
 #include "shader.h"
 
+using namespace Graphics::Cg;
+
 typedef std::map<std::string, ParameterList > ParameterMap;
 typedef std::pair<std::string, ParameterList > ParameterPair;
 

@@ -37,7 +37,7 @@ private:
     bool water_enabled;
     const GLenum buffers[5];
     GLuint tex_array[5];
-    Shader shader;
+    Graphics::Cg::Shader shader;
     GLuint renderbuffer_array[3];
     float epsilon;
     int width;

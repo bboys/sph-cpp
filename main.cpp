@@ -16,7 +16,6 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
-#include "shader.h"
 #include "scene.h"
 #include "particle.h"
 #include "plane.h"

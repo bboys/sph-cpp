@@ -2,6 +2,10 @@
 #include <cassert>
 #include <iostream>
 
+namespace Graphics {
+
+namespace Cg {
+
 CGprofile vertex_profile;
 CGprofile fragment_profile;
 
@@ -134,4 +138,8 @@ std::vector<CGparameter> Shader::get_parameters(std::string const &name)
         if (CGparameter param = cgGetNamedParameter(*it, name.c_str()))
             parameters.push_back(param);
     return parameters;
+}
+
+}
+
 }
