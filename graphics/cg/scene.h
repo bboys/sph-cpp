@@ -12,6 +12,14 @@
 #include "plane.h"
 #include "shader.h"
 #include <memory>
+#include <map>
+
+enum class GraphicsType
+{
+    BASE,
+    CG,
+    OPENGL
+};
 
 class Scene
 {
@@ -27,6 +35,9 @@ public:
     std::shared_ptr<Graphics::Base::Planes> planes;
 
 private:
+    std::map<GraphicsType, std::shared_ptr<Graphics::Base::Particles> > particles_map;
+    std::map<GraphicsType, std::shared_ptr<Graphics::Base::Planes> > planes_map;
+
     GLuint fbo_array[3];
     bool opengl_enabled;
     bool deferred_enabled;
@@ -44,7 +55,6 @@ private:
     int height;
     ParameterMap parameters;
     float pmatrix[16];
-    
 public:
     Scene();
     Scene(int width, int height);
@@ -71,7 +81,7 @@ public:
     void toggle_contour();
     void toggle_water();
     void set_size(int w, int h);
-    
+    void add_graphics_type_poiners();
 private:
     void set_parameters();
     template <class T>

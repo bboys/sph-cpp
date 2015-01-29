@@ -527,6 +527,15 @@ void Scene::toggle_opengl()
 {
     opengl_enabled = !opengl_enabled;
 
+    //~ GraphicsType type = opengl_enabled ? GraphicsType::OPENGL : GraphicsType::CG;
+
+    //~ if (particles_map.find(type) != particles_map.end())
+    //~ {
+        //~ particles = particles_map.find(type)->second;
+        //~ planes = planes_map.find(type)->second;
+        //~ return;
+    //~ }
+
     std::shared_ptr<Graphics::Base::Particles> new_particles;
     if (opengl_enabled)
         new_particles = std::make_shared<Graphics::OpenGL::Particles>(*particles);
@@ -554,6 +563,8 @@ void Scene::toggle_opengl()
     }
 
     planes = new_planes;
+
+    //~ add_graphics_type_poiners();
 }
 
 void Scene::toggle_normals()
@@ -594,10 +605,18 @@ void Scene::set_size(int w, int h)
     height = h;
 }
 
+void Scene::add_graphics_type_poiners()
+{
+    particles_map.insert(std::pair<GraphicsType, std::shared_ptr<Graphics::Base::Particles> >(GraphicsType::CG, particles));
+    planes_map.insert(std::pair<GraphicsType, std::shared_ptr<Graphics::Base::Planes> >(GraphicsType::CG, planes));
+}
+
 Scene::Scene()
 :
     particles(new Graphics::Cg::Particles()),
     planes(new Graphics::Cg::Planes()),
+    particles_map(),
+    planes_map(),
     fbo_array(),
     opengl_enabled(false),
     deferred_enabled(false),
@@ -611,12 +630,15 @@ Scene::Scene()
     renderbuffer_array(),
     epsilon(0.0f)
 {
+    add_graphics_type_poiners();
 }
 
 Scene::Scene(int width, int height)
 :
     particles(new Graphics::Cg::Particles()),
     planes(new Graphics::Cg::Planes()),
+    particles_map(),
+    planes_map(),
     fbo_array(),
     opengl_enabled(false),
     deferred_enabled(false),
@@ -632,4 +654,5 @@ Scene::Scene(int width, int height)
     width(width),
     height(height)
 {
+    add_graphics_type_poiners();
 }
