@@ -10,7 +10,7 @@ namespace OpenGL {
 class Particles : public Base::Particles
 {
 public:
-    Particles();
+    Particles() = default;
     Particles(Base::Particles const &other): Base::Particles(other){};
     Particles(Particles &&) = default;
     virtual ~Particles();

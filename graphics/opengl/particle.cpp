@@ -2,17 +2,13 @@
 
 #define GL_GLEXT_PROTOTYPES
 
+#include <GL/gl.h>
 #include <GL/glext.h>
 #include <GL/glut.h>
 
 namespace Graphics {
 
 namespace OpenGL {
-
-Particles::Particles()
-:
-    Base::Particles()
-{}
 
 Particles::~Particles()
 {

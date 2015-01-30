@@ -1,28 +1,19 @@
-#ifndef OBJECT_H_ICS
-#define OBJECT_H_ICS
+#ifndef SPH_GRAPHICS_CG_OBJECT_H
+#define SPH_GRAPHICS_CG_OBJECT_H
 
-#include <vector>
 #include <map>
 #include <string>
 #include <memory>
 #include "shader.h"
 
-using namespace Graphics::Cg;
+namespace Graphics {
+
+namespace Cg {
 
 typedef std::map<std::string, ParameterList > ParameterMap;
 typedef std::pair<std::string, ParameterList > ParameterPair;
 
-class Object {
-public:
-    float position[3];
-    float color[4];
-
-    Object() = default;
-    Object(float const *p, float const *c);
-};
-
-template <class T>
-class Objects : public std::vector<T>
+class Objects
 {
     std::shared_ptr<Shader> shader_ptr;
 public:
@@ -32,7 +23,6 @@ public:
     Objects(): shader_ptr(new Shader()), shader(*shader_ptr), parameters() {};
     Objects(Objects const &other)
     :
-        std::vector<T>(other),
         shader_ptr(other.shader_ptr),
         shader(*shader_ptr),
         parameters(other.parameters)
@@ -64,5 +54,9 @@ public:
     }
 
 };
+
+}
+
+}
 
 #endif

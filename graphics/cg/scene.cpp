@@ -6,6 +6,8 @@
 #include "graphics/opengl/particle.h"
 #include "graphics/opengl/plane.h"
 
+using namespace Graphics::Cg;
+
 void Scene::set_perspective(GLdouble fovy, GLdouble aspect, GLdouble zNear, GLdouble zFar)
 {
     top = zNear * tan(fovy * M_PI / 360.0);
@@ -60,8 +62,7 @@ void Scene::set_parameters()
         cgGLSetParameter2f(*it, (float)width, (float)height);
 }
 
-template <class T>
-void Scene::set_parameters(Objects<T> &objects)
+void Scene::set_parameters(Objects &objects)
 {
     ParameterList *list;
     list = &objects.parameters["ModelViewProj"];
@@ -175,7 +176,8 @@ void Scene::draw_particles_color_only()
 
 void Scene::draw_particles_from_shader(size_t index)
 {
-    set_parameters(*particles);
+    set_parameters(*reinterpret_cast<Particles*>(particles.get()));
+    //~ set_parameters(*std::dynamic_pointer_cast<Particles>(particles));
     if (vbo_enabled)
         particles->draw(index);
     else
@@ -192,7 +194,8 @@ void Scene::draw_planes()
 
 void Scene::draw_planes_from_shader(size_t index)
 {
-    set_parameters(*planes);
+    set_parameters(*reinterpret_cast<Planes*>(planes.get()));
+    //~ set_parameters(*std::dynamic_pointer_cast<Planes>(planes));
     if (vbo_enabled)
         planes->draw(index);
     else
@@ -516,7 +519,6 @@ void Scene::save_to_png(std::string const &filename)
         //~ it_begin += width*4;
         //~ it_end -= width*4;
     //~ }
-//~ 
     //~ LodePNG::Encoder encoder;
     //~ encoder.encode(png_data, tex_data, width, height);
     //~ LodePNG::saveFile(png_data, filename);
@@ -526,15 +528,6 @@ void Scene::save_to_png(std::string const &filename)
 void Scene::toggle_opengl()
 {
     opengl_enabled = !opengl_enabled;
-
-    //~ GraphicsType type = opengl_enabled ? GraphicsType::OPENGL : GraphicsType::CG;
-
-    //~ if (particles_map.find(type) != particles_map.end())
-    //~ {
-        //~ particles = particles_map.find(type)->second;
-        //~ planes = planes_map.find(type)->second;
-        //~ return;
-    //~ }
 
     std::shared_ptr<Graphics::Base::Particles> new_particles;
     if (opengl_enabled)
@@ -564,7 +557,7 @@ void Scene::toggle_opengl()
 
     planes = new_planes;
 
-    //~ add_graphics_type_poiners();
+    init_shaders();
 }
 
 void Scene::toggle_normals()
@@ -605,18 +598,10 @@ void Scene::set_size(int w, int h)
     height = h;
 }
 
-void Scene::add_graphics_type_poiners()
-{
-    particles_map.insert(std::pair<GraphicsType, std::shared_ptr<Graphics::Base::Particles> >(GraphicsType::CG, particles));
-    planes_map.insert(std::pair<GraphicsType, std::shared_ptr<Graphics::Base::Planes> >(GraphicsType::CG, planes));
-}
-
 Scene::Scene()
 :
     particles(new Graphics::Cg::Particles()),
     planes(new Graphics::Cg::Planes()),
-    particles_map(),
-    planes_map(),
     fbo_array(),
     opengl_enabled(false),
     deferred_enabled(false),
@@ -630,15 +615,12 @@ Scene::Scene()
     renderbuffer_array(),
     epsilon(0.0f)
 {
-    add_graphics_type_poiners();
 }
 
 Scene::Scene(int width, int height)
 :
     particles(new Graphics::Cg::Particles()),
     planes(new Graphics::Cg::Planes()),
-    particles_map(),
-    planes_map(),
     fbo_array(),
     opengl_enabled(false),
     deferred_enabled(false),
@@ -654,5 +636,4 @@ Scene::Scene(int width, int height)
     width(width),
     height(height)
 {
-    add_graphics_type_poiners();
 }

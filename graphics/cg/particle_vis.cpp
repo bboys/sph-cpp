@@ -11,11 +11,6 @@ namespace Graphics {
 
 namespace Cg {
 
-Particles::Particles()
-:
-    Base::Particles()
-{}
-
 Particles::~Particles()
 {
 }
@@ -68,7 +63,7 @@ void Particles::init_shader()
     shader.load_program(ShaderType::FRAGMENT, "sphere_f.cg");
     shader.load_program(ShaderType::FRAGMENT, "sphere_shadows_f.cg");
 
-    Objects<Graphics::Base::Particle>::init_shader();
+    Objects::init_shader();
 }
 
 void Particles::init_old_shader()
@@ -77,7 +72,7 @@ void Particles::init_old_shader()
     shader.load_program(ShaderType::VERTEX, "sphere_v.cg");
     shader.load_program(ShaderType::FRAGMENT, "sphere_old_f.cg");
 
-    Objects<Graphics::Base::Particle>::init_shader();
+    Objects::init_shader();
 }
 
 void Particles::init_water_shader()
@@ -87,7 +82,7 @@ void Particles::init_water_shader()
     shader.load_program(ShaderType::VERTEX, "particle_v.cg");
     shader.load_program(ShaderType::FRAGMENT, "particle_f.cg");
 
-    Objects<Graphics::Base::Particle>::init_shader();
+    Objects::init_shader();
 }
 
 }

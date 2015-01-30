@@ -24,7 +24,7 @@ public:
 class Planes : public Objects<Plane>
 {
 protected:
-    GLuint vbo_id;
+    unsigned int vbo_id;
 public:
     Planes (): Objects(), vbo_id(0) {};
     Planes (Planes const &other): Objects(other), vbo_id(other.vbo_id) {};

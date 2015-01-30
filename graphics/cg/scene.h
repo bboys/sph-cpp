@@ -35,9 +35,6 @@ public:
     std::shared_ptr<Graphics::Base::Planes> planes;
 
 private:
-    std::map<GraphicsType, std::shared_ptr<Graphics::Base::Particles> > particles_map;
-    std::map<GraphicsType, std::shared_ptr<Graphics::Base::Planes> > planes_map;
-
     GLuint fbo_array[3];
     bool opengl_enabled;
     bool deferred_enabled;
@@ -53,7 +50,7 @@ private:
     float epsilon;
     int width;
     int height;
-    ParameterMap parameters;
+    Graphics::Cg::ParameterMap parameters;
     float pmatrix[16];
 public:
     Scene();
@@ -81,11 +78,9 @@ public:
     void toggle_contour();
     void toggle_water();
     void set_size(int w, int h);
-    void add_graphics_type_poiners();
 private:
     void set_parameters();
-    template <class T>
-    void set_parameters(Objects<T> &objects);
+    void set_parameters(Graphics::Cg::Objects &objects);
     bool check_framebuffer_status() const;
 };
 
