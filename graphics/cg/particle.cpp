@@ -1,4 +1,4 @@
-#include "particle_vis.h"
+#include "particle.h"
 
 #define GL_GLEXT_PROTOTYPES
 

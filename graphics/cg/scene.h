@@ -8,9 +8,8 @@
 #include <vector>
 #include "graphics/base/particle.h"
 #include "graphics/base/plane.h"
-#include "particle_vis.h"
-#include "plane.h"
 #include "shader.h"
+#include "object.h"
 #include <memory>
 #include <map>
 

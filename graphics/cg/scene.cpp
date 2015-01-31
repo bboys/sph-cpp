@@ -5,6 +5,8 @@
 #include "shader.h"
 #include "graphics/opengl/particle.h"
 #include "graphics/opengl/plane.h"
+#include "plane.h"
+#include "particle.h"
 
 using namespace Graphics::Cg;
 
