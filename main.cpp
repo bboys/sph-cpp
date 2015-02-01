@@ -16,6 +16,7 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 
+#include "graphics/opengl/scene.h"
 #include "scene.h"
 #include "particle.h"
 #include "plane.h"
@@ -25,6 +26,7 @@
 #include "unistd.h"
 
 int w_width=1024, w_height=768;
+//~ Graphics::OpenGL::Scene scene(w_width, w_height);
 Scene scene(w_width, w_height);
 
 enum class MouseMode {
