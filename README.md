@@ -36,7 +36,7 @@ Compile with make and run the ./ray executable from the build directory
     Ctrl+Click and drag: Zoom
 
 # Roadmap
--   Make the CG shader optional
+-   Make the CG shader optional (only the scene is left now)
 -   Add an alternative/better GLSL implementation
 -   Use cmake instead of a Makefile to be able to detect missing dependencies and to allow for easy enabling/disabling certain parts of the code during compilation (like the shaders)
 -   Refactor the visualisation to allow easier implementation of different modules (like we already have with the balls and splats)
