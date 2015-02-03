@@ -1,60 +1,31 @@
-#ifndef SCENE_H_ICS
-#define SCENE_H_ICS
+#ifndef SPH_GRAPHICS_CG_SCENE_H
+#define SPH_GRAPHICS_CG_SCENE_H
 
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include <Cg/cg.h>
 #include <Cg/cgGL.h>
-#include <vector>
-#include "graphics/base/particle.h"
-#include "graphics/base/plane.h"
-#include "shader.h"
-#include "object.h"
 #include <memory>
-#include <map>
 
-enum class GraphicsType
+#include "graphics/base/scene.h"
+#include "object.h"
+#include "shader.h"
+
+namespace Graphics {
+
+namespace Cg {
+
+class Scene : public Base::Scene
 {
-    BASE,
-    CG,
-    OPENGL
-};
-
-class Scene
-{
-    GLdouble near;
-    GLdouble far;
-    GLdouble top;
-    GLdouble bottom;
-    GLdouble right;
-    GLdouble left;
-
-public:
-    std::shared_ptr<Graphics::Base::Particles> particles;
-    std::shared_ptr<Graphics::Base::Planes> planes;
-
-private:
     GLuint fbo_array[3];
-    bool opengl_enabled;
-    bool deferred_enabled;
-    bool vbo_enabled;
-    bool normals_enabled;
-    bool shadows_enabled;
-    bool contour_enabled;
-    bool water_enabled;
     const GLenum buffers[5];
     GLuint tex_array[5];
     Graphics::Cg::Shader shader;
     GLuint renderbuffer_array[3];
-    float epsilon;
-    int width;
-    int height;
     Graphics::Cg::ParameterMap parameters;
-    float pmatrix[16];
 public:
     Scene();
     Scene(int width, int height);
-    void set_perspective(GLdouble fovy, GLdouble aspect, GLdouble zNear, GLdouble zFar);
     void draw_particles_from_shader(size_t index = 0);
     void draw_particles();
     void draw_particles_depth_only();
@@ -70,17 +41,14 @@ public:
     void bind_fbo(size_t index = 0);
     void save_to_png(std::string const &filename);
     void toggle_opengl();
-    void toggle_deferred();
-    void toggle_vbo();
-    void toggle_normals();
-    void toggle_shadows();
-    void toggle_contour();
-    void toggle_water();
-    void set_size(int w, int h);
 private:
     void set_parameters();
     void set_parameters(Graphics::Cg::Objects &objects);
     bool check_framebuffer_status() const;
 };
+
+}
+
+}
 
 #endif

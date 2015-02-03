@@ -8,18 +8,10 @@
 #include "plane.h"
 #include "particle.h"
 
-using namespace Graphics::Cg;
 
-void Scene::set_perspective(GLdouble fovy, GLdouble aspect, GLdouble zNear, GLdouble zFar)
-{
-    top = zNear * tan(fovy * M_PI / 360.0);
-    bottom = -top;
-    right = top * aspect;
-    left = -right;
-    far = zFar;
-    near = zNear;
-    glFrustum(left, right, bottom, top, zNear, zFar);
-}
+namespace Graphics {
+
+namespace Cg {
 
 void Scene::set_parameters()
 {
@@ -562,80 +554,26 @@ void Scene::toggle_opengl()
     init_shaders();
 }
 
-void Scene::toggle_normals()
-{
-    normals_enabled = !normals_enabled;
-}
-
-void Scene::toggle_deferred()
-{
-    deferred_enabled = !deferred_enabled;
-    init_shaders();
-}
-
-void Scene::toggle_vbo()
-{
-    vbo_enabled = !vbo_enabled;
-}
-
-void Scene::toggle_shadows()
-{
-    shadows_enabled = !shadows_enabled;
-}
-
-void Scene::toggle_contour()
-{
-    contour_enabled = !contour_enabled; 
-}
-
-void Scene::toggle_water()
-{
-    water_enabled = !water_enabled;
-    init_shaders();
-}
-
-void Scene::set_size(int w, int h)
-{
-    width = w;
-    height = h;
-}
-
 Scene::Scene()
 :
-    particles(new Graphics::Cg::Particles()),
-    planes(new Graphics::Cg::Planes()),
+    Base::Scene(std::make_shared<Particles>(), std::make_shared<Planes>(), 0, 0),
     fbo_array(),
-    opengl_enabled(false),
-    deferred_enabled(false),
-    vbo_enabled(true),
-    normals_enabled(false),
-    shadows_enabled(false),
-    contour_enabled(false),
-    water_enabled(false),
     buffers{GL_COLOR_ATTACHMENT0_EXT, GL_COLOR_ATTACHMENT1_EXT, GL_COLOR_ATTACHMENT2_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_COLOR_ATTACHMENT0_EXT},
     tex_array(),
-    renderbuffer_array(),
-    epsilon(0.0f)
+    renderbuffer_array()
 {
 }
 
 Scene::Scene(int width, int height)
 :
-    particles(new Graphics::Cg::Particles()),
-    planes(new Graphics::Cg::Planes()),
+    Base::Scene(std::make_shared<Particles>(), std::make_shared<Planes>(), width, height),
     fbo_array(),
-    opengl_enabled(false),
-    deferred_enabled(false),
-    vbo_enabled(true),
-    normals_enabled(false),
-    shadows_enabled(false),
-    contour_enabled(false),
-    water_enabled(false),
     buffers{GL_COLOR_ATTACHMENT0_EXT, GL_COLOR_ATTACHMENT1_EXT, GL_COLOR_ATTACHMENT2_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_COLOR_ATTACHMENT0_EXT},
     tex_array(),
-    renderbuffer_array(),
-    epsilon(0.0f),
-    width(width),
-    height(height)
+    renderbuffer_array()
 {
+}
+
+}
+
 }

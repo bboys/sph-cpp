@@ -27,7 +27,7 @@
 
 int w_width=1024, w_height=768;
 //~ Graphics::OpenGL::Scene scene(w_width, w_height);
-Scene scene(w_width, w_height);
+Graphics::Cg::Scene scene(w_width, w_height);
 
 enum class MouseMode {
     IDLE,
