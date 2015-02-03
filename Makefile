@@ -73,6 +73,7 @@ proflink:
 	LFLAGS	= 	-fPIC -pg
 
 $(BUILDDIR):
+	@mkdir -p $@/graphics/base
 	@mkdir -p $@/graphics/cg
 	@mkdir -p $@/graphics/opengl
 
