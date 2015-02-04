@@ -92,10 +92,6 @@ void Scene::bind_fbo(size_t index)
 
 void Scene::save_to_png(std::string const &filename)
 {
-} 
-
-void Scene::toggle_opengl()
-{
 }
 
 void Scene::toggle_normals()

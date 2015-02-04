@@ -42,7 +42,6 @@ public:
     void init_shaders();
     void bind_fbo(size_t index = 0);
     void save_to_png(std::string const &filename);
-    void toggle_opengl();
 private:
     void set_parameters();
     void set_parameters(Graphics::Cg::Objects &objects);

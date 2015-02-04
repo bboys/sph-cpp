@@ -3,8 +3,6 @@
 #include <cassert>
 #include <cstring>
 #include "shader.h"
-#include "graphics/opengl/particle.h"
-#include "graphics/opengl/plane.h"
 #include "plane.h"
 #include "particle.h"
 
@@ -129,10 +127,7 @@ void Scene::set_parameters(Objects &objects)
 
 void Scene::draw_particles()
 {
-    if (opengl_enabled)
-        particles->draw();
-    else
-        draw_particles_from_shader();
+    draw_particles_from_shader();
 }
 
 void Scene::draw_particles_depth_only()
@@ -141,19 +136,17 @@ void Scene::draw_particles_depth_only()
     if (!water_enabled)
         return;
 
-    if (!opengl_enabled)
-    {
-        glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-        glDepthMask(GL_TRUE);
+    glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+    glDepthMask(GL_TRUE);
 
-        epsilon = 0.5f;
-    }
+    epsilon = 0.5f;
+
     draw_particles();
 }
 
 void Scene::draw_particles_color_only()
 {
-    if (!opengl_enabled and water_enabled)
+    if (water_enabled)
     {
         glEnable(GL_BLEND);
         glBlendFunc(GL_ONE, GL_ONE);
@@ -180,10 +173,7 @@ void Scene::draw_particles_from_shader(size_t index)
 
 void Scene::draw_planes()
 {
-    if (opengl_enabled)
-        planes->draw();
-    else
-        draw_planes_from_shader();
+    draw_planes_from_shader();
 }
 
 void Scene::draw_planes_from_shader(size_t index)
@@ -198,7 +188,7 @@ void Scene::draw_planes_from_shader(size_t index)
 
 void Scene::draw_shadow_map()
 {
-    if (!deferred_enabled || opengl_enabled || !shadows_enabled)
+    if (!deferred_enabled || !shadows_enabled)
         return;
 
     draw_particles_from_shader(1);
@@ -206,7 +196,7 @@ void Scene::draw_shadow_map()
 
 void Scene::draw_normpass()
 {
-    if (opengl_enabled or !deferred_enabled)
+    if (!deferred_enabled)
         return;
 
     if (shadows_enabled)
@@ -246,7 +236,7 @@ void Scene::draw_normpass()
 
 void Scene::draw_contours()
 {
-    if (!deferred_enabled or opengl_enabled)
+    if (!deferred_enabled)
         return;
 
     if (contour_enabled)
@@ -470,7 +460,7 @@ void Scene::init_shaders()
 
 void Scene::bind_fbo(size_t index)
 {
-    if (opengl_enabled or !deferred_enabled)
+    if (!deferred_enabled)
         return;
 
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, fbo_array[index]);
@@ -517,41 +507,6 @@ void Scene::save_to_png(std::string const &filename)
     //~ encoder.encode(png_data, tex_data, width, height);
     //~ LodePNG::saveFile(png_data, filename);
     std::cout << "Not implemented" << std::endl;
-} 
-
-void Scene::toggle_opengl()
-{
-    opengl_enabled = !opengl_enabled;
-
-    std::shared_ptr<Graphics::Base::Particles> new_particles;
-    if (opengl_enabled)
-        new_particles = std::make_shared<Graphics::OpenGL::Particles>(*particles);
-    else
-        new_particles = std::make_shared<Graphics::Cg::Particles>(*particles);
-
-    if (!new_particles)
-    {
-        std::cerr << "Something went wrong with casting between OpenGL and Cg particles" << std::endl;
-        return;
-    }
-
-    particles = new_particles;
-
-    std::shared_ptr<Graphics::Base::Planes> new_planes;
-    if (opengl_enabled)
-        new_planes = std::make_shared<Graphics::OpenGL::Planes>(*planes);
-    else
-        new_planes = std::make_shared<Graphics::Cg::Planes>(*planes);
-
-    if (!new_planes)
-    {
-        std::cerr << "Something went wrong with casting between OpenGL and Cg planes" << std::endl;
-        return;
-    }
-
-    planes = new_planes;
-
-    init_shaders();
 }
 
 Scene::Scene()

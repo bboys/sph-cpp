@@ -26,7 +26,6 @@ public:
     std::shared_ptr<Graphics::Base::Planes> planes;
 
 protected:
-    bool opengl_enabled;
     bool deferred_enabled;
     bool vbo_enabled;
     bool normals_enabled;
@@ -54,7 +53,6 @@ public:
     virtual void init_shaders();
     virtual void bind_fbo(size_t index = 0);
     virtual void save_to_png(std::string const &filename);
-    void toggle_opengl();
     void toggle_deferred();
     void toggle_vbo();
     void toggle_normals();
