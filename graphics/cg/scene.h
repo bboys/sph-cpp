@@ -26,6 +26,8 @@ class Scene : public Base::Scene
 public:
     Scene();
     Scene(int width, int height);
+    Scene(Base::Scene const &other);
+    ~Scene() {};
     void draw_particles_from_shader(size_t index = 0);
     void draw_particles();
     void draw_particles_depth_only();

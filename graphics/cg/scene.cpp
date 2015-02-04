@@ -574,6 +574,18 @@ Scene::Scene(int width, int height)
 {
 }
 
+Scene::Scene(Base::Scene const &other)
+:
+    Base::Scene(other),
+    fbo_array(),
+    buffers{GL_COLOR_ATTACHMENT0_EXT, GL_COLOR_ATTACHMENT1_EXT, GL_COLOR_ATTACHMENT2_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_COLOR_ATTACHMENT0_EXT},
+    tex_array(),
+    renderbuffer_array()
+{
+    particles = std::make_shared<Particles>(*other.particles);
+    planes = std::make_shared<Planes>(*other.planes);
+}
+
 }
 
 }

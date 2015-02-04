@@ -18,6 +18,14 @@ Scene::Scene(int width, int height)
 {
 }
 
+Scene::Scene(Base::Scene const &other)
+:
+    Base::Scene(other)
+{
+    particles = std::make_shared<Particles>(*other.particles);
+    planes = std::make_shared<Planes>(*other.planes);
+}
+
 }
 
 }

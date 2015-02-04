@@ -12,6 +12,8 @@ class Scene : public Base::Scene
 public:
     Scene();
     Scene(int width, int height);
+    Scene(Base::Scene const &other);
+    ~Scene() {};
 };
 
 }

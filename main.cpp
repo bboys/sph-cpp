@@ -24,10 +24,10 @@
 #include "particlesource.h"
 #include "utils.h"
 #include "unistd.h"
+#include <memory>
 
 int w_width=1024, w_height=768;
-//~ Graphics::OpenGL::Scene scene(w_width, w_height);
-Graphics::Cg::Scene scene(w_width, w_height);
+std::shared_ptr<Graphics::Base::Scene> scene = std::make_shared<Graphics::Cg::Scene>(w_width, w_height);
 
 enum class MouseMode {
     IDLE,
@@ -67,6 +67,7 @@ std::vector<ParticleSource> particlesources;
 float tstep[3] = {1e-2f, 1e-3f,5e-2f};
 bool shit_is_aan = false;
 bool fps_toggle = false;
+bool opengl_enabled = false;
 int tstep_toggle = 0;
 float mps = Physics::mass_0 * 50;
 
@@ -81,14 +82,14 @@ void init()
     float pos[3] = {0.9f,0.9f,0.9f};
     float velocity[3] = {0.0f,0.0f,0.0f};
     velocity[0] = -3.0f;
-    particlesources.push_back(ParticleSource(pos, color, buckets, &scene.particles, mps, velocity, max_particles/2));
+    particlesources.push_back(ParticleSource(pos, color, buckets, &scene, mps, velocity, max_particles/2));
     pos[0] = -0.9f;
     pos[2] = -0.9f;
     velocity[0] = 3.0f;
-    particlesources.push_back(ParticleSource(pos, color, buckets, &scene.particles, mps, velocity, max_particles/2));
+    particlesources.push_back(ParticleSource(pos, color, buckets, &scene, mps, velocity, max_particles/2));
 
 
-    scene.init_shaders();
+    scene->init_shaders();
 }
 
 void construct_planes()
@@ -102,7 +103,7 @@ void construct_planes()
         direction[idx] = 1.0f;
         pos[idx] = -3.0f;
         Graphics::Base::Plane obj(pos, color, direction);
-        scene.planes->push_back(std::move(obj));
+        scene->planes->push_back(std::move(obj));
         direction[idx] = 0.0f;
         pos[idx] = 0.0f;
     }
@@ -139,7 +140,7 @@ void display_fps()
     }
     sprintf(fps_text, "FPS: %6.2f", fps);
     sprintf(nnp_text, "NNP: %6.2f", Physics::num_neighbour_particles);
-    sprintf(particle_text, " NP: %6zu", scene.particles->get_particles()->size());
+    sprintf(particle_text, " NP: %6zu", scene->particles->get_particles()->size());
 
     glDisable(GL_LIGHTING);
     glDisable(GL_DEPTH_TEST);
@@ -211,18 +212,18 @@ void display()
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    scene.bind_fbo();
+    scene->bind_fbo();
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    scene.set_perspective(45.0f, (float)w_width/w_height, 1.0, 1000.0);
+    scene->set_perspective(45.0f, (float)w_width/w_height, 1.0, 1000.0);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
     gluLookAt(0.0, 0.0, 3.0 / camera_zoom, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
-    scene.draw_planes();
+    scene->draw_planes();
 
     glEnable(GL_RESCALE_NORMAL);
 
@@ -241,19 +242,19 @@ void display()
     if (!shit_is_aan)
         glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
-    scene.draw_particles_depth_only();
+    scene->draw_particles_depth_only();
 
-    scene.draw_particles_color_only();
+    scene->draw_particles_color_only();
 
     draw_cube();
 
-    scene.bind_fbo(2);
+    scene->bind_fbo(2);
 
-    scene.draw_normpass();
+    scene->draw_normpass();
 
     glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 
-    scene.draw_contours();
+    scene->draw_contours();
 
     glPopMatrix();
     glMatrixMode(GL_PROJECTION);
@@ -272,7 +273,7 @@ void display()
             tstep2 = 1.0f / fps * 0.5f;
         else
             tstep2 = tstep[tstep_toggle];
-        scene.particles->update(tstep2);
+        scene->particles->update(tstep2);
         for (std::vector<ParticleSource>::iterator it = particlesources.begin(); it != particlesources.end(); ++it)
             it->update(tstep2);
     }
@@ -291,6 +292,19 @@ void reset_camera()
     glutPostRedisplay();
 }
 
+void toggle_opengl()
+{
+    opengl_enabled = !opengl_enabled;
+
+    if (opengl_enabled)
+        scene = std::make_shared<Graphics::OpenGL::Scene>(*scene);
+    else
+        scene = std::make_shared<Graphics::Cg::Scene>(*scene);
+
+    scene->init_shaders();
+    scene->reshape();
+}
+
 void keyboard(unsigned char key, int x, int y)
 {
     switch(key) {
@@ -300,35 +314,35 @@ void keyboard(unsigned char key, int x, int y)
             return;
         case 'o':
         case 'O':
-            scene.toggle_opengl();
+            toggle_opengl();
             return;
         case 'd':
         case 'D':
-            scene.toggle_deferred();
+            scene->toggle_deferred();
             return;
         case 'p':
         case 'P':
-            scene.toggle_vbo();
+            scene->toggle_vbo();
             return;
         case 'c':
         case 'C':
-            scene.toggle_contour();
+            scene->toggle_contour();
             return;
         case 'n':
         case 'N':
-            scene.toggle_normals();
+            scene->toggle_normals();
             return;
         case 's':
         case 'S':
-            scene.toggle_shadows();
+            scene->toggle_shadows();
             return;
         case 'w':
         case 'W':
-            scene.toggle_water();
+            scene->toggle_water();
             return;
         case 'y':
         case 'Y':
-            scene.particles->toggle_2d_mode();
+            scene->particles->toggle_2d_mode();
             return;
         case 'g':
         case 'G':
@@ -356,7 +370,7 @@ void keyboard(unsigned char key, int x, int y)
         {
             std::stringstream ss;
             ss << "screenshots/" << png_iter++ << ".png";
-            scene.save_to_png(ss.str());
+            scene->save_to_png(ss.str());
             return;
         }
         default:
@@ -368,9 +382,9 @@ void reshape(int w, int h)
 {
     w_width = w;
     w_height = h;
-    scene.set_size(w, h);
+    scene->set_size(w, h);
     glViewport(0, 0, w_width, w_height);
-    scene.reshape();
+    scene->reshape();
     glMatrixMode(GL_MODELVIEW);
 
 }
