@@ -36,7 +36,6 @@ public:
     void draw_planes();
     void draw_normpass();
     void draw_shadow_map();
-    void draw_fullscreen_quad();
     void draw_contours();
     void reshape();
     void init_shaders();

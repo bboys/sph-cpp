@@ -263,39 +263,6 @@ void Scene::draw_contours()
     }
 }
 
-void Scene::draw_fullscreen_quad()
-{
-
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
-    glLoadIdentity();
-    gluOrtho2D(0, width, 0, height);
-
-    glMatrixMode(GL_MODELVIEW);
-    glPushMatrix();
-    glLoadIdentity();
-
-    glBegin(GL_QUADS);
-
-    glTexCoord2i(0, 0);
-    glVertex2i(0, 0);
-    glTexCoord2i(0, 1);
-    glVertex2i(0, height);
-    glTexCoord2i(1, 1);
-    glVertex2i(width, height);
-    glTexCoord2i(1, 0);
-    glVertex2i(width, 0);
-
-    glEnd();
-
-    glPopMatrix();
-
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
-
-    glMatrixMode(GL_MODELVIEW);
-}
-
 bool Scene::check_framebuffer_status() const
 {
     // check FBO status

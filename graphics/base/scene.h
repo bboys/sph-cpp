@@ -47,7 +47,7 @@ public:
     virtual void draw_planes();
     virtual void draw_normpass();
     virtual void draw_shadow_map();
-    virtual void draw_fullscreen_quad();
+    void draw_fullscreen_quad();
     virtual void draw_contours();
     virtual void reshape();
     virtual void init_shaders();
