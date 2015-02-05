@@ -17,14 +17,14 @@ endif
 
 BUILDDIR =	build-$(OS)
 ifeq ($(OS), OSX)
-    NVSDKINC	=	-I/usr/X11R6/include -I./graphics/cg -I./
+    NVSDKINC	=	-I/usr/X11R6/include
     NVSDKLIB	=	-framework Cg -framework OpenGL -lglut -lGLU -lGLEW -lpng -lpthread
     CXX		=	g++-4.7
     CXXFLAGS	=	$(APP_FLAGS) -g -std=c++11 -fopenmp
     LINK	=	g++-4.7
     LIBS	=	-L/usr/gcc-4.7.1/lib -L/usr/lib -L/usr/local/lib -lm
 else
-    NVSDKINC	=	-I./graphics/cg -I./
+    NVSDKINC	=	 -I./
     NVSDKLIB	=	-lCgGL -lCg -lglut -lGLU -lGLEW -lpng -lpthread -lGL
     CXX		=	g++
     CXXFLAGS	=	$(APP_FLAGS) -g -std=c++11 -fopenmp

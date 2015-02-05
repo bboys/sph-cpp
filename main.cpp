@@ -17,9 +17,9 @@
 #include <GL/freeglut.h>
 
 #include "graphics/opengl/scene.h"
-#include "scene.h"
+#include "graphics/cg/scene.h"
 #include "particle.h"
-#include "plane.h"
+#include "graphics/base/plane.h"
 #include "bucket.h"
 #include "particlesource.h"
 #include "utils.h"
