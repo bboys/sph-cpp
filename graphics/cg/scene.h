@@ -38,7 +38,6 @@ public:
     void draw_shadow_map();
     void draw_contours();
     void reshape();
-    void init_shaders();
     void bind_fbo(size_t index = 0);
     void save_to_png(std::string const &filename);
 private:

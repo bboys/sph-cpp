@@ -84,6 +84,19 @@ void Scene::reshape()
 
 void Scene::init_shaders()
 {
+    if (water_enabled)
+        particles->init_water_shader();
+    else if (deferred_enabled)
+        particles->init_shader();
+    else
+        particles->init_old_shader();
+
+    if (deferred_enabled)
+        planes->init_shader();
+    else
+        planes->init_old_shader();
+    if (vbo_enabled)
+        planes->init_vbo();
 }
 
 void Scene::bind_fbo(size_t index)

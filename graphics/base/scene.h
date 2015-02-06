@@ -50,7 +50,7 @@ public:
     void draw_fullscreen_quad();
     virtual void draw_contours();
     virtual void reshape();
-    virtual void init_shaders();
+    void init_shaders();
     virtual void bind_fbo(size_t index = 0);
     virtual void save_to_png(std::string const &filename);
     void toggle_deferred();
