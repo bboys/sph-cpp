@@ -1,3 +1,6 @@
-SOURCES =	main.cpp graphics/cg/shader.cpp graphics/cg/scene.cpp graphics/opengl/scene.cpp graphics/base/scene.cpp graphics/cg/plane.cpp particle.cpp bucket.cpp particlesource.cpp graphics/cg/particle.cpp graphics/opengl/particle.cpp graphics/opengl/plane.cpp
-OBJECTS =	$(SOURCES:.cpp=.o)
-TARGET 	= 	ray
+SOURCES	=	main.cpp particle.cpp bucket.cpp particlesource.cpp
+SOURCES+=	graphics/base/scene.cpp   graphics/base/surface.cpp
+SOURCES+=	graphics/opengl/scene.cpp graphics/opengl/particle.cpp graphics/opengl/plane.cpp
+SOURCES+=	graphics/cg/scene.cpp     graphics/cg/particle.cpp     graphics/cg/plane.cpp     graphics/cg/shader.cpp
+OBJECTS	=	$(SOURCES:.cpp=.o)
+TARGET	= 	ray
