@@ -1,5 +1,5 @@
-#ifndef UTILS_H_ICS
-#define UTILS_H_ICS
+#ifndef SPH_UTILS_H
+#define SPH_UTILS_H
 
 #include <iostream>
 #include <cmath>
