@@ -18,7 +18,7 @@ void Particles::draw(size_t index)
 {
     std::vector<Base::Particle>::iterator it = begin();
     std::vector<Physics::Particle>::iterator it2 = particles->begin();
-    for ( ;it != end(), it2 != particles->end();++it, ++it2)
+    for ( ;it != end() and it2 != particles->end();++it, ++it2)
     {
         glPushMatrix();
         glColor4fv(it->color);

@@ -98,7 +98,7 @@ void Planes::init_shader()
     shader.load_program(ShaderType::FRAGMENT, "plane_f.cg");
     shader.load_program(ShaderType::FRAGMENT, "plane_shadows_f.cg");
 
-    Objects::init_shader();
+    Cg::Objects::init_shader();
 }
 
 void Planes::init_old_shader()
@@ -108,7 +108,7 @@ void Planes::init_old_shader()
     shader.load_program(ShaderType::VERTEX, "plane_v.cg");
     shader.load_program(ShaderType::FRAGMENT, "plane_old_f.cg");
 
-    Objects::init_shader();
+    Cg::Objects::init_shader();
 }
 
 }
