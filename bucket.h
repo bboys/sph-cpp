@@ -9,9 +9,6 @@ namespace Physics {
 
 class Bucket;
 
-typedef std::list<Bucket *> BucketVec;
-typedef std::list<Bucket *>::iterator BucketIter;
-
 typedef std::vector<Bucket> BucketVec1;
 typedef std::vector<BucketVec1> BucketVec2;
 typedef std::vector<BucketVec2> BucketVec3;

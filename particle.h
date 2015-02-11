@@ -29,6 +29,9 @@ extern float num_neighbour_particles;
 typedef std::list<Particle *> ParticleVec;
 typedef std::list<Particle *>::iterator ParticleIter;
 
+typedef std::list<Bucket *> BucketVec;
+typedef std::list<Bucket *>::iterator BucketIter;
+
 class Particle
 {
 public:
@@ -100,6 +103,32 @@ protected:
     float wall_distance();
     void wall_vector(float out[3]);
     void get_normal_by_idx(float out[3], size_t idx);
+
+public:
+    class neighbour_iterator: public std::iterator<std::input_iterator_tag, Particle *>
+    {
+        friend class Particle;
+
+        BucketIter bucket_iter;
+        BucketIter bucket_end;
+        ParticleIter particle_iter;
+        ParticleIter particle_end;
+
+    public:
+        neighbour_iterator() = delete;
+        neighbour_iterator(Particle const *particle);
+        neighbour_iterator(Particle const *particle, bool isend);
+        neighbour_iterator(neighbour_iterator const &other);
+        neighbour_iterator &operator++();
+        neighbour_iterator const operator++(int);
+        bool operator==(neighbour_iterator const &other) const;
+        bool operator!=(neighbour_iterator const &other) const;
+        Particle *operator*();
+        Particle **operator->();
+    };
+
+    neighbour_iterator begin();
+    neighbour_iterator end();
 };
 
 class ParticlesBase : public std::vector<Particle>
