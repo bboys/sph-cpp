@@ -47,10 +47,15 @@ LIBDIR	=	$(LIBMESA) $(LIBX) $(LIBS) $(NVSDKLIB)
 
 include Make.inc
 
-OBJ = $(addprefix $(BUILDDIR)/, $(OBJECTS))
+OBJ = $(addprefix $(BUILDDIR)/, $(OBJECTS) main.o)
 TGT = $(addprefix $(BUILDDIR)/, $(TARGET))
 
+TEST_OBJ = $(addprefix $(BUILDDIR)/, $(OBJECTS) test/performance.o)
+TEST_TGT = $(addprefix $(BUILDDIR)/, main_test)
+
 all: checkdirs $(TGT)
+
+test: checkdirs $(TEST_TGT)
 
 #~ all: checkdirs $(TGT) strip
 
@@ -64,6 +69,9 @@ $(BUILDDIR)/%.o : %.cpp
 $(TGT): $(OBJ) 
 	$(LINK) $(LFLAGS) -o $(TGT) $(OBJ) $(LIBDIR)
 
+$(TEST_TGT): $(TEST_OBJ) 
+	$(LINK) $(LFLAGS) -o $(TEST_TGT) $(TEST_OBJ) $(LIBDIR)
+
 checkdirs: $(BUILDDIR)
 
 strip:
@@ -76,6 +84,7 @@ $(BUILDDIR):
 	@mkdir -p $@/graphics/base
 	@mkdir -p $@/graphics/cg
 	@mkdir -p $@/graphics/opengl
+	@mkdir -p $@/test
 
 clean:
 	-rm -rf $(BUILDDIR)
