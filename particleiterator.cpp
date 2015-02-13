@@ -8,7 +8,8 @@ Particle::neighbour_iterator::neighbour_iterator(Particle const *particle)
     bucket_iter(particle->d_bucket->neighbours.begin()),
     bucket_end(particle->d_bucket->neighbours.end()),
     particle_iter((*bucket_iter)->particles.begin()),
-    particle_end((*bucket_iter)->particles.end())
+    particle_end((*bucket_iter)->particles.end()),
+    valid(true)
 {
     // Make sure particle_iter points to an actual particle
     while (particle_iter == particle_end and bucket_iter != bucket_end)
@@ -20,7 +21,8 @@ Particle::neighbour_iterator::neighbour_iterator(Particle const *particle, bool 
     bucket_iter(--particle->d_bucket->neighbours.end()),
     bucket_end(particle->d_bucket->neighbours.end()),
     particle_iter((*bucket_iter)->particles.end()),
-    particle_end((*bucket_iter++)->particles.end())
+    particle_end((*bucket_iter++)->particles.end()),
+    valid(false)
 {}
 
 Particle::neighbour_iterator::neighbour_iterator(Particle::neighbour_iterator const &other)
@@ -28,7 +30,8 @@ Particle::neighbour_iterator::neighbour_iterator(Particle::neighbour_iterator co
     bucket_iter(other.bucket_iter),
     bucket_end(other.bucket_end),
     particle_iter(other.particle_iter),
-    particle_end(other.particle_end)
+    particle_end(other.particle_end),
+    valid(other.valid)
 {}
 
 Particle::neighbour_iterator &Particle::neighbour_iterator::operator++()
@@ -44,6 +47,8 @@ Particle::neighbour_iterator &Particle::neighbour_iterator::operator++()
             return *this;
     }
 
+    valid = false;
+
     return *this;
 }
 
@@ -56,12 +61,12 @@ Particle::neighbour_iterator const Particle::neighbour_iterator::operator++(int)
 
 bool Particle::neighbour_iterator::operator==(neighbour_iterator const &other) const
 {
-    return particle_iter == other.particle_iter and bucket_iter == other.bucket_iter;
+    return particle_iter == other.particle_iter;
 }
 
 bool Particle::neighbour_iterator::operator!=(neighbour_iterator const &other) const
 {
-    return particle_iter != other.particle_iter or bucket_iter != other.bucket_iter;
+    return particle_iter != other.particle_iter;
 }
 
 Particle *Particle::neighbour_iterator::operator*()

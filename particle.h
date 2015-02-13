@@ -114,6 +114,8 @@ public:
         ParticleIter particle_iter;
         ParticleIter particle_end;
 
+        bool valid;
+
     public:
         neighbour_iterator() = delete;
         neighbour_iterator(Particle const *particle);
@@ -125,6 +127,10 @@ public:
         bool operator!=(neighbour_iterator const &other) const;
         Particle *operator*();
         Particle **operator->();
+
+        // Method to increase performance. The iterator evaluates as false
+        // when the end is reached.
+        operator bool() const {return valid;}
     };
 
     neighbour_iterator begin();
