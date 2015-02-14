@@ -2,6 +2,7 @@
 #define SPH_GRAPHICS_BASE_SURFACE_H
 
 #include "../../particle.h"
+#include "../../bucket.h"
 #include "../../utils.h"
 #include <memory>
 #include "object.h"
@@ -19,6 +20,7 @@ class Surface
 {
     float spline(float x) const;
     float isotropic_kernel(Physics::Particle const &particle, Difference const &diff) const;
+    float scalar_field(Physics::Buckets *buckets, float *position) const;
 };
 
 }
