@@ -1,12 +1,11 @@
-#include "particle.h"
 #include "bucket.h"
 
 namespace Physics {
 
-Particle::neighbour_iterator::neighbour_iterator(Particle const *particle)
+Bucket::neighbour_iterator::neighbour_iterator(Bucket *bucket)
 :
-    bucket_iter(particle->d_bucket->neighbours.begin()),
-    bucket_end(particle->d_bucket->neighbours.end()),
+    bucket_iter(bucket->neighbours.begin()),
+    bucket_end(bucket->neighbours.end()),
     particle_iter((*bucket_iter)->particles.begin()),
     particle_end((*bucket_iter)->particles.end()),
     valid(true)
@@ -16,16 +15,16 @@ Particle::neighbour_iterator::neighbour_iterator(Particle const *particle)
         operator++();
 }
 
-Particle::neighbour_iterator::neighbour_iterator(Particle const *particle, bool isend)
+Bucket::neighbour_iterator::neighbour_iterator(Bucket *bucket, bool isend)
 :
-    bucket_iter(--particle->d_bucket->neighbours.end()),
-    bucket_end(particle->d_bucket->neighbours.end()),
+    bucket_iter(--bucket->neighbours.end()),
+    bucket_end(bucket->neighbours.end()),
     particle_iter((*bucket_iter)->particles.end()),
     particle_end((*bucket_iter++)->particles.end()),
     valid(false)
 {}
 
-Particle::neighbour_iterator::neighbour_iterator(Particle::neighbour_iterator const &other)
+Bucket::neighbour_iterator::neighbour_iterator(Bucket::neighbour_iterator const &other)
 :
     bucket_iter(other.bucket_iter),
     bucket_end(other.bucket_end),
@@ -34,7 +33,7 @@ Particle::neighbour_iterator::neighbour_iterator(Particle::neighbour_iterator co
     valid(other.valid)
 {}
 
-Particle::neighbour_iterator &Particle::neighbour_iterator::operator++()
+Bucket::neighbour_iterator &Bucket::neighbour_iterator::operator++()
 {
     if (++particle_iter != particle_end)
         return *this;
@@ -52,41 +51,41 @@ Particle::neighbour_iterator &Particle::neighbour_iterator::operator++()
     return *this;
 }
 
-Particle::neighbour_iterator const Particle::neighbour_iterator::operator++(int)
+Bucket::neighbour_iterator const Bucket::neighbour_iterator::operator++(int)
 {
     neighbour_iterator tmp(*this); 
     operator++();
     return tmp;
 }
 
-bool Particle::neighbour_iterator::operator==(neighbour_iterator const &other) const
+bool Bucket::neighbour_iterator::operator==(neighbour_iterator const &other) const
 {
     return particle_iter == other.particle_iter;
 }
 
-bool Particle::neighbour_iterator::operator!=(neighbour_iterator const &other) const
+bool Bucket::neighbour_iterator::operator!=(neighbour_iterator const &other) const
 {
     return particle_iter != other.particle_iter;
 }
 
-Particle *Particle::neighbour_iterator::operator*()
+Particle *Bucket::neighbour_iterator::operator*()
 {
     return *particle_iter;
 }
 
-Particle **Particle::neighbour_iterator::operator->()
+Particle **Bucket::neighbour_iterator::operator->()
 {
     return &(*particle_iter);
 }
 
-Particle::neighbour_iterator Particle::begin()
+Bucket::neighbour_iterator Bucket::begin()
 {
-    return Particle::neighbour_iterator(this);
+    return Bucket::neighbour_iterator(this);
 }
 
-Particle::neighbour_iterator Particle::end()
+Bucket::neighbour_iterator Bucket::end()
 {
-    return Particle::neighbour_iterator(this, true);
+    return Bucket::neighbour_iterator(this, true);
 }
 
 }

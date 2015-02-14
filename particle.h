@@ -2,7 +2,6 @@
 #define SPH_PHYSICS_PARTICLE_H
 
 #include "utils.h"
-#include <list>
 #include <vector>
 
 namespace Physics {
@@ -25,12 +24,6 @@ extern float density_0;
 extern float pressure_0;
 
 extern float num_neighbour_particles;
-
-typedef std::list<Particle *> ParticleVec;
-typedef std::list<Particle *>::iterator ParticleIter;
-
-typedef std::list<Bucket *> BucketVec;
-typedef std::list<Bucket *>::iterator BucketIter;
 
 class Particle
 {
@@ -103,38 +96,6 @@ protected:
     float wall_distance();
     void wall_vector(float out[3]);
     void get_normal_by_idx(float out[3], size_t idx);
-
-public:
-    class neighbour_iterator: public std::iterator<std::input_iterator_tag, Particle *>
-    {
-        friend class Particle;
-
-        BucketIter bucket_iter;
-        BucketIter bucket_end;
-        ParticleIter particle_iter;
-        ParticleIter particle_end;
-
-        bool valid;
-
-    public:
-        neighbour_iterator() = delete;
-        neighbour_iterator(Particle const *particle);
-        neighbour_iterator(Particle const *particle, bool isend);
-        neighbour_iterator(neighbour_iterator const &other);
-        neighbour_iterator &operator++();
-        neighbour_iterator const operator++(int);
-        bool operator==(neighbour_iterator const &other) const;
-        bool operator!=(neighbour_iterator const &other) const;
-        Particle *operator*();
-        Particle **operator->();
-
-        // Method to increase performance. The iterator evaluates as false
-        // when the end is reached.
-        operator bool() const {return valid;}
-    };
-
-    neighbour_iterator begin();
-    neighbour_iterator end();
 };
 
 class ParticlesBase : public std::vector<Particle>
