@@ -266,32 +266,23 @@ void Particle::update_forces()
     set_zero(normal);
 
     size_t i = 0;
-
-    BucketIter bucket_ip = d_bucket->neighbours.begin();
-    BucketIter bucket_ip_end = d_bucket->neighbours.end();
-    for (; bucket_ip != bucket_ip_end; ++bucket_ip)
+    for (Bucket::neighbour_iterator it = d_bucket->begin(); it; ++it)
     {
-        Bucket *bucket_i = *bucket_ip;
-        ParticleIter particle_ip = bucket_i->particles.begin();
-        ParticleIter particle_ip_end = bucket_i->particles.end();
-        for (; particle_ip != particle_ip_end; ++particle_ip)
-        {
-            Particle *particle_i = *particle_ip;
-            if (particle_i == this)
-                continue;
+        Particle *particle_i = *it;
+        if (particle_i == this)
+            continue;
 
-            Difference diff;
-            difference(position, particle_i->position, diff);
+        Difference diff;
+        difference(position, particle_i->position, diff);
 
-            if (diff.len > effective_radius)
-                continue;
+        if (diff.len > effective_radius)
+            continue;
 
-            update_normal(particle_i, diff);
-            update_F_press(particle_i, diff);
-            update_F_vis(particle_i, diff);
-            update_F_surface(particle_i, diff);
-            ++i;
-        }
+        update_normal(particle_i, diff);
+        update_F_press(particle_i, diff);
+        update_F_vis(particle_i, diff);
+        update_F_surface(particle_i, diff);
+        ++i;
     }
     num_neighbour_particles = (num_neighbour_particles * 5000 - num_neighbour_particles + i) / 5000;
 
