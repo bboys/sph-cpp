@@ -62,7 +62,6 @@ size_t max_particles = 3000;
 float max_particle_boundary = 0.5f;
 float particle_middle = 0.0f;
 size_t bucket_num = 20;
-Physics::Buckets *buckets = new Physics::Buckets(bucket_num, bucket_num, bucket_num);
 std::vector<ParticleSource> particlesources;
 float tstep[3] = {1e-2f, 1e-3f,5e-2f};
 bool shit_is_aan = false;
@@ -73,7 +72,7 @@ float mps = Physics::mass_0 * 50;
 
 int png_iter = 0;
 
-void init()
+void init(std::shared_ptr<Physics::Buckets> buckets)
 {
     Physics::Particle::init_wall();
     float color[4] = {0.0f, 0.0f, 1.0f, 1.0f};
@@ -87,7 +86,6 @@ void init()
     pos[2] = -0.9f;
     velocity[0] = 3.0f;
     particlesources.push_back(ParticleSource(pos, color, buckets, &scene, mps, velocity, max_particles/2));
-
 
     scene->init_shaders();
 }
@@ -529,11 +527,10 @@ int main(int argc, char *argv[])
 
     set_lights();
 
-    init();
+    std::shared_ptr<Physics::Buckets> buckets = std::shared_ptr<Physics::Buckets>(new Physics::Buckets(bucket_num, bucket_num, bucket_num));
+    init(buckets);
 
     glutMainLoop();
-
-    delete buckets;
 
     return 0;
 }

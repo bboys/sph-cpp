@@ -9,7 +9,7 @@ class ParticleSource
 {
     float d_mass_per_time;
     std::shared_ptr<Graphics::Base::Scene> *d_scene;
-    Physics::Buckets *d_buckets;
+    std::shared_ptr<Physics::Buckets> d_buckets;
     float d_color[4];
     float d_position[3];
     float d_velocity[3];
@@ -17,8 +17,8 @@ class ParticleSource
     int spammed;
     int max;
 public:
-    ParticleSource(float position[3], float color[4], Physics::Buckets *buckets, std::shared_ptr<Graphics::Base::Scene> *scene, float mass_per_time, float velocity[3]);
-    ParticleSource(float position[3], float color[4], Physics::Buckets *buckets, std::shared_ptr<Graphics::Base::Scene> *scene, float mass_per_time, float velocity[3], int max);
+    ParticleSource(float position[3], float color[4], std::shared_ptr<Physics::Buckets> &buckets, std::shared_ptr<Graphics::Base::Scene> *scene, float mass_per_time, float velocity[3]);
+    ParticleSource(float position[3], float color[4], std::shared_ptr<Physics::Buckets> &buckets, std::shared_ptr<Graphics::Base::Scene> *scene, float mass_per_time, float velocity[3], int max);
     void update(float tstep);
 };
 
