@@ -183,33 +183,17 @@ float Particle::wall_distance()
 float Particle::update_density()
 {
     density = 0.0f;
-    //~ float density_change = 0.0f;
-    BucketIter bucket_ip = d_bucket->neighbours.begin();
-    BucketIter bucket_ip_end = d_bucket->neighbours.end();
-    for (; bucket_ip != bucket_ip_end; ++bucket_ip)
+    for (Bucket::neighbour_iterator it = d_bucket->begin(); it; ++it)
     {
-        Bucket *bucket_i = *bucket_ip;
-        ParticleIter particle_ip = bucket_i->particles.begin();
-        ParticleIter particle_ip_end = bucket_i->particles.end();
-        for (; particle_ip != particle_ip_end; ++particle_ip)
-        {
-            Particle *particle_i = *particle_ip;
-            Difference diff;
-            difference(position, particle_i->position, diff);
+        Particle *particle_i = *it;
+        Difference diff;
+        difference(position, particle_i->position, diff);
 
-            if (diff.len > effective_radius)
-                continue;
+        if (diff.len > effective_radius)
+            continue;
 
-            density += particle_i->mass * W(diff);
-            //~ float v[3];
-            //~ DW(diff, v);
-            //~ density_change += particle_i->mass *
-                                //~ ((velocity[0] - particle_i->velocity[0]) * v[0] +
-                                 //~ (velocity[1] - particle_i->velocity[1]) * v[1] + 
-                                 //~ (velocity[2] - particle_i->velocity[2]) * v[2]);
-        }
+        density += particle_i->mass * W(diff);
     }
-    //~ density += density_change * dt;
     return density;
 }
 
