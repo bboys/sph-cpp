@@ -43,3 +43,4 @@ Compile with make and run the ./ray executable from the build directory
 -   Add unit tests
 -   Add tests for the physics
 -   Fix the physics (like cluttering of particles into a ball)
+-   Add a parameter list instead of using global variables
